@@ -132,7 +132,8 @@ class MyFrame(wx.Frame):
 		for tag in tags:
 			#print tag
 			self.message_tree.AppendItem(message_root, tag) 
-			
+		self.message_tree.ExpandAll()
+		
 	def message_create(self, event):
 #		print "Not implemented: create message"
 		message = ""

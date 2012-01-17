@@ -5,6 +5,7 @@
 
 import wx
 import os
+import pyperclip
 
 # begin wxGlade: extracode
 # end wxGlade
@@ -63,10 +64,7 @@ class MyFrame(wx.Frame):
 		self.Bind(wx.EVT_MENU, self.load_message, self.LoadMessage)
 		self.Bind(wx.EVT_MENU, self.save_message, self.SaveMessage)
 		
-		self.Bind(wx.EVT_MENU, self.doCopyChild, self.copy_popup)
-		self.Bind(wx.EVT_MENU, self.doPasteChild, self.paste_popup)
-		self.Bind(wx.EVT_MENU, self.doDeleteChild, self.delete_popup)
-		self.Bind(wx.EVT_MENU, self.doInsertChild, self.insert_popup)
+		
 		self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.message_tree_popup, self.message_tree)
 		
 	def __set_properties(self):
@@ -134,9 +132,10 @@ class MyFrame(wx.Frame):
 		for tag in tags:
 			#print tag
 			self.message_tree.AppendItem(message_root, tag) 
-			
+		self.message_tree.ExpandAll()
+		
 	def message_create(self, event):
-		print "Not implemented: create message"
+#		print "Not implemented: create message"
 		message = ""
 		self.market_data.SetValue("")
 		message_root = self.message_tree.GetRootItem()
@@ -146,25 +145,64 @@ class MyFrame(wx.Frame):
 		while next_tag.IsOk():
 			message = message + self.message_tree.GetItemText(next_tag) + "\x01"
 			next_tag,cookie = self.message_tree.GetNextChild(message_root, cookie)
-			
+		message = self.message_trim_SOH(message)
 		self.market_data.SetValue(message)
+		
+	def message_trim_SOH(self, message):
+		# Remove any SOH from beginning of message and any additional SOH from the end.
+		while message[0] == "\x01":
+			message = message[1:]
+		while message[len(message)-2] == "\x01":
+			message = message[:len(message)-1]
+		return message
 		
 	def message_tree_popup(self, event):
 		#do right click on message tree
 		#add stuff to copy/paste/add/remove tree items
+		self.Bind(wx.EVT_MENU, self.doCopyChild, self.copy_popup)
+		self.Bind(wx.EVT_MENU, self.doPasteChild, self.paste_popup)
+		self.Bind(wx.EVT_MENU, self.doDeleteChild, self.delete_popup)
+		self.Bind(wx.EVT_MENU, self.doInsertChild, self.insert_popup)
 		self.PopupMenu(self.popup, event.GetPoint())
+		self.resetBindings()
+		
+	def resetBindings(self):
+		# Restore bindings to their initial settings
+		self.Bind(wx.EVT_MENU, self.quit_app, self.ExitProgram)
+		self.Bind(wx.EVT_MENU, self.clear_message, self.ClearMessage)
+		
+		self.Bind(wx.EVT_BUTTON, self.message_sort, self.sort_button)
+		self.Bind(wx.EVT_BUTTON, self.message_create, self.but)
+		self.Bind(wx.EVT_MENU, self.load_message, self.LoadMessage)
+		self.Bind(wx.EVT_MENU, self.save_message, self.SaveMessage)
+		
+		self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.message_tree_popup, self.message_tree)
 		
 	def doCopyChild(self, event):
-		print "not yet"
+		# Copy the text contents of the selected node.
+		selected = self.message_tree.GetSelections()
+		if len(selected) > 1: print "Only supporting single copy at this point..."
+		pyperclip.copy( str(self.message_tree.GetItemText(selected[0])) )
 		
 	def doPasteChild(self, event):
-		print "hold on"
+		# Paste the contents of the clipboard into the selected node.
+		selected = self.message_tree.GetSelections()
+		pasteString = pyperclip.paste()
+		if len(selected) > 1: print "Only supporting single paste at this point..."
+		self.message_tree.SetItemText(selected[0], pasteString)
 		
 	def doDeleteChild(self, event):
-		print "just a minute"
+		# Delete the selected child.
+		selected = self.message_tree.GetSelections()
+		if len(selected) > 1: print "Only supporting single delete at this point..."
+		self.message_tree.Delete(selected[0])
 		
 	def doInsertChild(self, event):
-		print "wait, almost there"
+		# Insert a child item after the selected child.
+		rootItem = self.message_tree.GetRootItem()
+		selected = self.message_tree.GetSelections()
+		if len(selected) > 1: print "Only supporting single insert at this point..."
+		self.message_tree.InsertItem(rootItem, idPrevious=selected[0], text="")
 		
 # end of class MyFrame
 

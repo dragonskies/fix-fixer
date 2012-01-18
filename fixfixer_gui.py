@@ -28,12 +28,13 @@ class MyFrame(wx.Frame):
 		wxglade_tmp_menu = wx.Menu()
 		wxglade_edit_menu = wx.Menu()
 		self.ClearMessage = wx.MenuItem(wxglade_edit_menu, 0, "Clear", "Clear_Message", wx.ITEM_NORMAL)
-		self.LoadMessage = wx.MenuItem(wxglade_tmp_menu, 1, "Load", "Load_message", wx.ITEM_NORMAL)
-		self.SaveMessage = wx.MenuItem(wxglade_tmp_menu, 2, "Save", "Save_message", wx.ITEM_NORMAL)
-		self.ExitProgram = wx.MenuItem(wxglade_tmp_menu, wx.ID_EXIT, "Exit", "Quit", wx.ITEM_NORMAL)
+		self.LoadMessage = wx.MenuItem(wxglade_tmp_menu, 1, "&Load\tCtrl-O", "Load_message", wx.ITEM_NORMAL)
+		self.SaveMessage = wx.MenuItem(wxglade_tmp_menu, 2, "&Save\tCtrl-S", "Save_message", wx.ITEM_NORMAL)
+		self.ExitProgram = wx.MenuItem(wxglade_tmp_menu, wx.ID_EXIT, "&Exit\tCtrl-Q", "Quit", wx.ITEM_NORMAL)
 		wxglade_edit_menu.AppendItem(self.ClearMessage)
 		wxglade_tmp_menu.AppendItem(self.LoadMessage)
 		wxglade_tmp_menu.AppendItem(self.SaveMessage)
+		wxglade_tmp_menu.AppendSeparator()
 		wxglade_tmp_menu.AppendItem(self.ExitProgram)
 		self.frame_1_menubar.Append(wxglade_tmp_menu, "File")
 		self.frame_1_menubar.Append(wxglade_edit_menu, "Edit")
@@ -65,6 +66,22 @@ class MyFrame(wx.Frame):
 		self.Bind(wx.EVT_BUTTON, self.message_create, self.but)
 		self.Bind(wx.EVT_MENU, self.load_message, self.LoadMessage)
 		self.Bind(wx.EVT_MENU, self.save_message, self.SaveMessage)
+		
+		self.key_load = wx.NewId()
+		self.key_save = wx.NewId()
+		self.key_quit = wx.NewId()
+		
+		self.Bind(wx.EVT_MENU, self.load_message, id=self.key_load)
+		self.Bind(wx.EVT_MENU, self.save_message, id=self.key_save)
+		self.Bind(wx.EVT_MENU, self.quit_app, id=self.key_quit)
+		
+
+		
+		self.accel_tbl = wx.AcceleratorTable([(wx.ACCEL_CTRL, ord('O'), self.key_load),
+                                              (wx.ACCEL_CTRL, ord('S'), self.key_save),
+                                              (wx.ACCEL_CTRL, ord('q'), self.key_quit)
+                                              ])
+		self.SetAcceleratorTable(self.accel_tbl)
 		
 		
 		self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.message_tree_popup, self.message_tree)
@@ -155,6 +172,10 @@ class MyFrame(wx.Frame):
 		self.Bind(wx.EVT_MENU, self.save_message, self.SaveMessage)
 		
 		self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.message_tree_popup, self.message_tree)
+		
+		self.Bind(wx.EVT_MENU, self.load_message, id=self.key_load)
+		self.Bind(wx.EVT_MENU, self.save_message, id=self.key_save)
+		self.Bind(wx.EVT_MENU, self.quit_app, id=self.key_quit)
 		
 	def doCopyChild(self, event):
 		# Copy the text contents of the selected node.

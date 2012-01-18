@@ -42,12 +42,13 @@ class MyFrame(wx.Frame):
 		self.SetMenuBar(self.frame_1_menubar)
 		# Menu Bar end
 		self.popup = wx.Menu()
-		self.copy_popup = wx.MenuItem(self.popup, 0, "Copy", "Copy item", wx.ITEM_NORMAL)
-		self.paste_popup =wx.MenuItem(self.popup, 1, "Paste", "Replace item", wx.ITEM_NORMAL)
-		self.delete_popup = wx.MenuItem(self.popup, 2, "Delete", "Delete item", wx.ITEM_NORMAL)
+		self.copy_popup = wx.MenuItem(self.popup, 0, "&Copy\tCtrl-C", "Copy item", wx.ITEM_NORMAL)
+		self.paste_popup =wx.MenuItem(self.popup, 1, "&Paste\tCtrl-V", "Replace item", wx.ITEM_NORMAL)
+		self.delete_popup = wx.MenuItem(self.popup, 2, "&Delete\tDelete", "Delete item", wx.ITEM_NORMAL)
 		self.insert_popup = wx.MenuItem(self.popup, 3, "Insert", "Insert new item", wx.ITEM_NORMAL)
 		self.popup.AppendItem(self.copy_popup)
 		self.popup.AppendItem(self.paste_popup)
+		self.popup.AppendSeparator()
 		self.popup.AppendItem(self.delete_popup)
 		self.popup.AppendItem(self.insert_popup)
 		
@@ -74,9 +75,7 @@ class MyFrame(wx.Frame):
 		self.Bind(wx.EVT_MENU, self.load_message, id=self.key_load)
 		self.Bind(wx.EVT_MENU, self.save_message, id=self.key_save)
 		self.Bind(wx.EVT_MENU, self.quit_app, id=self.key_quit)
-		
 
-		
 		self.accel_tbl = wx.AcceleratorTable([(wx.ACCEL_CTRL, ord('O'), self.key_load),
                                               (wx.ACCEL_CTRL, ord('S'), self.key_save),
                                               (wx.ACCEL_CTRL, ord('q'), self.key_quit)
@@ -137,6 +136,7 @@ class MyFrame(wx.Frame):
 		message_file_dir = message_file_dialog.GetPath()
 		f = file(message_file_dir, 'r')
 		self.market_data.SetValue(f.read())
+		f.close()
 		
 	def save_message(self, event):
 		filters = 'All files (*.*)|*.*|Text files (*.txt)|*.txt'
@@ -149,6 +149,7 @@ class MyFrame(wx.Frame):
 		message_file_dir = message_file_dialog.GetPath()
 		f = file(message_file_dir, 'w')
 		f.write(self.market_data.GetValue())
+		f.close()
 			
 		
 	def message_tree_popup(self, event):

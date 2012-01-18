@@ -4,6 +4,46 @@ import pyperclip
 
 
 class MessageTree(wx.TreeCtrl):
+	def __init__(self, window, tID, style):
+		wx.TreeCtrl.__init__(self, window, tID, style=style)
+		self.Bind(wx.EVT_TREE_BEGIN_LABEL_EDIT, self.BeginLabelEdit, self)
+		self.Bind(wx.EVT_TREE_END_LABEL_EDIT, self.EndLabelEdit, self)
+		self.Bind(wx.EVT_TREE_SEL_CHANGING, self.EndLabelEdit, self)
+		self.Bind(wx.EVT_TREE_BEGIN_DRAG, self.BeginLabelDrag, self)
+		self.Bind(wx.EVT_TREE_END_DRAG, self.EndLabelDrag, self)
+		
+	def BeginLabelEdit(self, event):
+		selected = self.GetSelections()
+		self.labelEditSelected = selected[0]
+		if self.GetItemText( selected[0] ) == "                    ":
+			self.SetItemText( selected[0], "" )
+			
+	def EndLabelEdit(self, event):
+		try:
+			if self.GetItemText( self.labelEditSelected ) == "":
+				self.SetItemText( self.labelEditSelected, "                    " )
+		except:
+			pass
+			
+	def BeginLabelDrag(self, event):
+		if self.GetChildrenCount(event.GetItem()) == 0:
+			event.Allow()
+			self.dragItem = event.GetItem()
+		
+	def EndLabelDrag(self, event):
+		if not event.GetItem().IsOk():
+			return
+		try:
+			old = self.dragItem
+		except:
+			return
+		new = event.GetItem()
+		parent = self.GetItemParent(new)
+		text = self.GetItemText(old)
+		self.Delete(old)
+		self.InsertItem(parent, new, text)
+		
+
 	def clear(self):
 		# Remove all items from the MessageTree
 		self.DeleteAllItems()
@@ -56,7 +96,7 @@ class MessageTree(wx.TreeCtrl):
 		rootItem = self.GetRootItem()
 		selected = self.GetSelections()
 		if len(selected) > 1: print "Only supporting single insert at this point..."
-		self.InsertItem(rootItem, idPrevious=selected[0], text="")
+		self.InsertItem(rootItem, idPrevious=selected[0], text="                    ")
 	
 	
 def trim_SOH(message):

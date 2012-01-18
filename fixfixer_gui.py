@@ -41,16 +41,7 @@ class MyFrame(wx.Frame):
 		
 		self.SetMenuBar(self.frame_1_menubar)
 		# Menu Bar end
-		self.popup = wx.Menu()
-		self.copy_popup = wx.MenuItem(self.popup, 0, "&Copy\tCtrl-C", "Copy item", wx.ITEM_NORMAL)
-		self.paste_popup =wx.MenuItem(self.popup, 1, "&Paste\tCtrl-V", "Replace item", wx.ITEM_NORMAL)
-		self.delete_popup = wx.MenuItem(self.popup, 2, "&Delete\tDelete", "Delete item", wx.ITEM_NORMAL)
-		self.insert_popup = wx.MenuItem(self.popup, 3, "Insert", "Insert new item", wx.ITEM_NORMAL)
-		self.popup.AppendItem(self.copy_popup)
-		self.popup.AppendItem(self.paste_popup)
-		self.popup.AppendSeparator()
-		self.popup.AppendItem(self.delete_popup)
-		self.popup.AppendItem(self.insert_popup)
+
 		
 		self.market_data = wx.TextCtrl(self.window_1_pane_1, -1, "", style=wx.TE_PROCESS_ENTER|wx.TE_MULTILINE|wx.TE_RICH|wx.TE_LINEWRAP)
 		self.sort_button = wx.Button(self.window_1_pane_1, -1, "Sort message", style=wx.BU_BOTTOM)
@@ -83,7 +74,7 @@ class MyFrame(wx.Frame):
 		self.SetAcceleratorTable(self.accel_tbl)
 		
 		
-		self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.message_tree_popup, self.message_tree)
+
 		
 	def __set_properties(self):
 		# begin wxGlade: MyFrame.__set_properties
@@ -150,48 +141,5 @@ class MyFrame(wx.Frame):
 		f = file(message_file_dir, 'w')
 		f.write(self.market_data.GetValue())
 		f.close()
-			
-		
-	def message_tree_popup(self, event):
-		#do right click on message tree
-		#add stuff to copy/paste/add/remove tree items
-		self.Bind(wx.EVT_MENU, self.doCopyChild, self.copy_popup)
-		self.Bind(wx.EVT_MENU, self.doPasteChild, self.paste_popup)
-		self.Bind(wx.EVT_MENU, self.doDeleteChild, self.delete_popup)
-		self.Bind(wx.EVT_MENU, self.doInsertChild, self.insert_popup)
-		self.PopupMenu(self.popup, event.GetPoint())
-		self.resetBindings()
-		
-	def resetBindings(self):
-		# Restore bindings to their initial settings
-		self.Bind(wx.EVT_MENU, self.quit_app, self.ExitProgram)
-		self.Bind(wx.EVT_MENU, self.message_clear, self.ClearMessage)
-		
-		self.Bind(wx.EVT_BUTTON, self.message_sort, self.sort_button)
-		self.Bind(wx.EVT_BUTTON, self.message_create, self.but)
-		self.Bind(wx.EVT_MENU, self.load_message, self.LoadMessage)
-		self.Bind(wx.EVT_MENU, self.save_message, self.SaveMessage)
-		
-		self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.message_tree_popup, self.message_tree)
-		
-		self.Bind(wx.EVT_MENU, self.load_message, id=self.key_load)
-		self.Bind(wx.EVT_MENU, self.save_message, id=self.key_save)
-		self.Bind(wx.EVT_MENU, self.quit_app, id=self.key_quit)
-		
-	def doCopyChild(self, event):
-		# Copy the text contents of the selected node.
-		self.message_tree.copy_selected()
-		
-	def doPasteChild(self, event):
-		# Paste the contents of the clipboard into the selected node.
-		self.message_tree.paste_selected()
-		
-	def doDeleteChild(self, event):
-		# Delete the selected child.
-		self.message_tree.delete_selected()
-		
-	def doInsertChild(self, event):
-		# Insert a child item after the selected child.
-		self.message_tree.insert_selected()
 		
 # end of class MyFrame

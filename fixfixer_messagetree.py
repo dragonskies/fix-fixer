@@ -1,16 +1,37 @@
 import wx
-
 import pyperclip
 
 
 class MessageTree(wx.TreeCtrl):
+	"""An extended wx.TreeCtrl with added functionality."""
 	def __init__(self, window, tID, style):
 		wx.TreeCtrl.__init__(self, window, tID, style=style)
-		self.Bind(wx.EVT_TREE_BEGIN_LABEL_EDIT, self.BeginLabelEdit, self)
-		self.Bind(wx.EVT_TREE_END_LABEL_EDIT, self.EndLabelEdit, self)
-		self.Bind(wx.EVT_TREE_SEL_CHANGING, self.EndLabelEdit, self)
-		self.Bind(wx.EVT_TREE_BEGIN_DRAG, self.BeginLabelDrag, self)
-		self.Bind(wx.EVT_TREE_END_DRAG, self.EndLabelDrag, self)
+		
+		# Set up the right-click popup menu.
+		self.popup = wx.Menu()
+		self.popup_copy = wx.MenuItem(self.popup, 0, "&Copy\tCtrl-C", "Copy item", wx.ITEM_NORMAL)
+		self.popup_paste =wx.MenuItem(self.popup, 1, "&Paste\tCtrl-V", "Replace item", wx.ITEM_NORMAL)
+		self.popup_delete = wx.MenuItem(self.popup, 2, "&Delete\tDelete", "Delete item", wx.ITEM_NORMAL)
+		self.popup_insert = wx.MenuItem(self.popup, 3, "Insert", "Insert new item", wx.ITEM_NORMAL)
+		self.popup.AppendItem(self.popup_copy)
+		self.popup.AppendItem(self.popup_paste)
+		self.popup.AppendSeparator()
+		self.popup.AppendItem(self.popup_delete)
+		self.popup.AppendItem(self.popup_insert)
+		
+		# Add bindings for popup menu
+		self.Bind(wx.EVT_MENU, self.doCopyChild, self.popup_copy)
+		self.Bind(wx.EVT_MENU, self.doPasteChild, self.popup_paste)
+		self.Bind(wx.EVT_MENU, self.doDeleteChild, self.popup_delete)
+		self.Bind(wx.EVT_MENU, self.doInsertChild, self.popup_insert)
+		self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.onRClickPopup, self)
+		
+		# Add bindings for label interaction
+		self.Bind(wx.EVT_TREE_BEGIN_LABEL_EDIT, self.onBeginLabelEdit, self)
+		self.Bind(wx.EVT_TREE_END_LABEL_EDIT, self.onEndLabelEdit, self)
+		self.Bind(wx.EVT_TREE_SEL_CHANGING, self.onEndLabelEdit, self)
+		self.Bind(wx.EVT_TREE_BEGIN_DRAG, self.onBeginLabelDrag, self)
+		self.Bind(wx.EVT_TREE_END_DRAG, self.onEndLabelDrag, self)
 		
 		self.key_copy = wx.NewId()
 		self.key_paste = wx.NewId()
@@ -24,31 +45,52 @@ class MessageTree(wx.TreeCtrl):
                                               ])
 		self.SetAcceleratorTable(self.accel_tbl)
 		
+# ---- Events ------------------------------------------------------- #
+		
+	def onRClickPopup(self, event):
+		"""Event handler for detecting a right click and presenting a popup menu."""
+		self.PopupMenu(self.popup, event.GetPoint())
+
 	def onKeyPress(self, event):
+		"""Event handler for detecting special key presses."""
 		keycode = event.GetKeyCode()
 		if keycode == wx.WXK_DELETE:
 			self.doDeleteChild(event)
 		event.Skip()
 		
-	def BeginLabelEdit(self, event):
+	def onBeginLabelEdit(self, event):
+		"""Event handler for detecting when a label is about to be edited.
+	
+		   When the event occurs, if the label is blank (20 spaces), it is cleared
+		   for editing."""
 		selected = self.GetSelections()
 		self.labelEditSelected = selected[0]
 		if self.GetItemText( selected[0] ) == "                    ":
 			self.SetItemText( selected[0], "" )
 			
-	def EndLabelEdit(self, event):
+	def onEndLabelEdit(self, event):
+		"""Event handler for detecting when a label has finished being edited.
+		
+		   When the event occurs, check if the label was cleared, and if so, replace
+		   with 20 spaces."""
 		try:
 			if self.GetItemText( self.labelEditSelected ) == "":
 				self.SetItemText( self.labelEditSelected, "                    " )
 		except:
 			pass
 			
-	def BeginLabelDrag(self, event):
-		if self.GetChildrenCount(event.GetItem()) == 0:
+	def onBeginLabelDrag(self, event):
+		"""Event handler for detecting when a label is being dragged.
+		
+		   If only one label is selected, the dragging is permitted."""
+		if (len(self.GetSelections()) == 1 and self.GetChildrenCount(event.GetItem()) == 0):
 			event.Allow()
 			self.dragItem = event.GetItem()
 		
-	def EndLabelDrag(self, event):
+	def onEndLabelDrag(self, event):
+		"""Event handler for detecting when a label has finished being dragged.
+		
+		   When the event occurs, the data is moved to its new location."""
 		if not event.GetItem().IsOk():
 			return
 		try:
@@ -61,23 +103,40 @@ class MessageTree(wx.TreeCtrl):
 		self.Delete(old)
 		self.InsertItem(parent, new, text)
 		
-
+	def doCopyChild(self, event):
+		"""Event handler for copying a child node."""
+		self.copy_selected()
+		
+	def doPasteChild(self, event):
+		"""Event handler for pasting a child node."""
+		self.paste_selected()
+		
+	def doDeleteChild(self, event):
+		"""Event handler for deleting a child (children) node(s)."""
+		self.delete_selected()
+		
+	def doInsertChild(self, event):
+		"""Event handler for inserting a new child node after the selected node."""
+		self.insert_selected()
+		
+# ------------------------------------------------------------------- #
+		
+		
 	def clear(self):
-		# Remove all items from the MessageTree
+		"""Removes all items from the MessageTree."""
 		self.DeleteAllItems()
 
 	def set_message(self, message):
-		# Set the MessageTree to the specified message
+		"""Sets the MessageTree to the contents of the market data field."""
 		self.DeleteAllItems()
 		message_root = self.AddRoot("Message")
 		tags = message.split('\x01')
 		for tag in tags:
-			#print tag
 			self.AppendItem(message_root, tag)
 		self.ExpandAll()
 
 	def get_message(self):
-		# Return the text from the MessageTree, delimited by SOH
+		"""Returns the text from the MessageTree, delimted by SOH."""
 		message = ""
 		message_root = self.GetRootItem()
 		first_tag, cookie = self.GetFirstChild(message_root)
@@ -89,52 +148,38 @@ class MessageTree(wx.TreeCtrl):
 		message = trim_SOH(message)
 		return message
 		
-		
-	def doCopyChild(self, event):
-		# Event handler: Copy the text contents of the selected node.
-		self.copy_selected()
-		
 	def copy_selected(self):
-		# Copy the text contents of the selected node.
+		"""Copy the text contents of the selected node."""
 		selected = self.GetSelections()
 		if len(selected) > 1: print "Only supporting single copy at this point..."
 		pyperclip.copy( str( self.GetItemText( selected[0] ) ) )
-		
-	def doPasteChild(self, event):
-		# Event Handler: Paste the contents of the clipboard into the selected node.
-		self.paste_selected()
 
 	def paste_selected(self):
-		# Paste the contents of the clipboard into the selected node.
+		"""Paste the contents of the clipboard into the selected node."""
 		selected = self.GetSelections()
 		pasteString = pyperclip.paste()
 		if len(selected) > 1: print "Only supporting single paste at this point..."
 		self.SetItemText(selected[0], pasteString)
 		
-	def doDeleteChild(self, event):
-		# Event Handler: Delete the selected child.
-		self.delete_selected()
-		
 	def delete_selected(self):
-		# Delete the selected children.
+		"""Delete the selected children nodes."""
 		selected = self.GetSelections()
 		for item in selected:
 			self.Delete(item)
 		
-	def doInsertChild(self, event):
-		# Event Hanlder: Insert a child item after the selected child.
-		self.insert_selected()
-		
 	def insert_selected(self):
-		# Insert a child item after the selected child.
+		"""Insert a new child node after the selected node."""
 		rootItem = self.GetRootItem()
 		selected = self.GetSelections()
 		if len(selected) > 1: print "Only supporting single insert at this point..."
 		self.InsertItem(rootItem, idPrevious=selected[0], text="                    ")
 		
+# --- End MessageTree class ----------------------------------------- #
+		
 
 def trim_SOH(message):
-	# Remove any SOH from beginning of message and any additional SOH from the end.
+	"""Trim all leading and any additional SOH characters and return a new copy of
+	   the message."""
 	while message[0] == "\x01":
 		message = message[1:]
 	while message[len(message)-2] == "\x01":

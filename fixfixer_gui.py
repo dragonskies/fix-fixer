@@ -5,6 +5,7 @@
 import wx
 import os
 
+import fixfixer_about
 import fixfixer_messagetree
 
 # begin wxGlade: extracode
@@ -18,6 +19,7 @@ class FixFixerGui(wx.Frame):
 		# begin wxGlade: MyFrame.__init__
 		kwds["style"] = wx.DEFAULT_FRAME_STYLE
 		wx.Frame.__init__(self, *args, **kwds)
+		self.AboutDialog = fixfixer_about.AboutFixFixer(self)
 		self.window_1 = wx.SplitterWindow(self, -1, style=wx.SP_3D|wx.SP_BORDER|wx.SP_LIVE_UPDATE)
 		self.window_1_pane_2 = wx.Panel(self.window_1, -1)
 		self.window_1_pane_1 = wx.Panel(self.window_1, -1, style=wx.TAB_TRAVERSAL|wx.FULL_REPAINT_ON_RESIZE)
@@ -28,17 +30,21 @@ class FixFixerGui(wx.Frame):
 		self.frame_1_menubar = wx.MenuBar()
 		wxglade_tmp_menu = wx.Menu()
 		wxglade_edit_menu = wx.Menu()
+		wxglade_help_menu = wx.Menu()
 		self.ClearMessage = wx.MenuItem(wxglade_edit_menu, 0, "Clear", "Clear_Message", wx.ITEM_NORMAL)
 		self.LoadMessage = wx.MenuItem(wxglade_tmp_menu, 1, "&Load\tCtrl-O", "Load_message", wx.ITEM_NORMAL)
 		self.SaveMessage = wx.MenuItem(wxglade_tmp_menu, 2, "&Save\tCtrl-S", "Save_message", wx.ITEM_NORMAL)
 		self.ExitProgram = wx.MenuItem(wxglade_tmp_menu, wx.ID_EXIT, "&Exit\tCtrl-Q", "Quit", wx.ITEM_NORMAL)
+		self.ShowAbout = wx.MenuItem(wxglade_help_menu, 1, "About", "About Dialog", wx.ITEM_NORMAL)
 		wxglade_edit_menu.AppendItem(self.ClearMessage)
 		wxglade_tmp_menu.AppendItem(self.LoadMessage)
 		wxglade_tmp_menu.AppendItem(self.SaveMessage)
 		wxglade_tmp_menu.AppendSeparator()
 		wxglade_tmp_menu.AppendItem(self.ExitProgram)
+		wxglade_help_menu.AppendItem(self.ShowAbout)
 		self.frame_1_menubar.Append(wxglade_tmp_menu, "File")
 		self.frame_1_menubar.Append(wxglade_edit_menu, "Edit")
+		self.frame_1_menubar.Append(wxglade_help_menu, "Help")
 		
 		self.SetMenuBar(self.frame_1_menubar)
 		# Menu Bar end
@@ -59,6 +65,7 @@ class FixFixerGui(wx.Frame):
 		self.Bind(wx.EVT_BUTTON, self.message_create, self.but)
 		self.Bind(wx.EVT_MENU, self.load_message, self.LoadMessage)
 		self.Bind(wx.EVT_MENU, self.save_message, self.SaveMessage)
+		self.Bind(wx.EVT_MENU, self.show_about, self.ShowAbout)
 		
 		self.key_load = wx.NewId()
 		self.key_save = wx.NewId()
@@ -105,6 +112,9 @@ class FixFixerGui(wx.Frame):
 	def quit_app(self, event): # wxGlade: MyFrame.<event_handler>
 		"""Event handler to exit the application."""
 		self.Close()
+		
+	def show_about(self, event):
+		self.AboutDialog.show()
 		
 	def load_message(self, event):
 		"""Load message from .TXT file."""

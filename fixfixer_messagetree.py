@@ -13,17 +13,21 @@ class MessageTree(wx.TreeCtrl):
 		self.popup_paste =wx.MenuItem(self.popup, 1, "&Paste\tCtrl-V", "Replace item", wx.ITEM_NORMAL)
 		self.popup_delete = wx.MenuItem(self.popup, 2, "&Delete\tDelete", "Delete item", wx.ITEM_NORMAL)
 		self.popup_insert = wx.MenuItem(self.popup, 3, "Insert", "Insert new item", wx.ITEM_NORMAL)
+		self.popup_edit = wx.MenuItem(self.popup, 3, "Edit", "Edit item", wx.ITEM_NORMAL)
+		self.popup.AppendItem(self.popup_edit)
 		self.popup.AppendItem(self.popup_copy)
 		self.popup.AppendItem(self.popup_paste)
 		self.popup.AppendSeparator()
 		self.popup.AppendItem(self.popup_delete)
 		self.popup.AppendItem(self.popup_insert)
 		
+		
 		# Add bindings for popup menu
 		self.Bind(wx.EVT_MENU, self.doCopyChild, self.popup_copy)
 		self.Bind(wx.EVT_MENU, self.doPasteChild, self.popup_paste)
 		self.Bind(wx.EVT_MENU, self.doDeleteChild, self.popup_delete)
 		self.Bind(wx.EVT_MENU, self.doInsertChild, self.popup_insert)
+		self.Bind(wx.EVT_MENU, self.doEditChild, self.popup_edit)
 		self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.onRClickPopup, self)
 		
 		# Add bindings for label interaction
@@ -127,6 +131,10 @@ class MessageTree(wx.TreeCtrl):
 	def doInsertChild(self, event):
 		"""Event handler for inserting a new child node after the selected node."""
 		self.insert_selected()
+		
+	def doEditChild(self, event):
+		"""Event handler for editing a child node."""
+		self.edit_selected()
 	
 	def doCreateChild(self, event):
 		"""Create a repeating group"""
@@ -201,6 +209,11 @@ class MessageTree(wx.TreeCtrl):
 		rootItem = selected[0]
 		if len(selected) > 1: print "Only supporting single insert at this point..."
 		self.InsertItem(self.GetItemParent(rootItem), idPrevious=selected[0], text="                    ")
+		
+	def edit_selected(self):
+		"""Edit the child node."""
+		selected = self.GetSelections()
+		self.EditLabel(selected[0])
 		
 # --- End MessageTree class ----------------------------------------- #
 		

@@ -35,14 +35,21 @@ class MessageTree(wx.TreeCtrl):
 		
 		self.key_copy = wx.NewId()
 		self.key_paste = wx.NewId()
+		self.key_child = wx.NewId()
+		self.key_endchild = wx.NewId()
+		
 		
 		self.Bind(wx.EVT_MENU, self.doCopyChild, id=self.key_copy)
 		self.Bind(wx.EVT_MENU, self.doPasteChild, id=self.key_paste)
+		self.Bind(wx.EVT_MENU, self.doCreateChild, id=self.key_child)
+		self.Bind(wx.EVT_MENU, self.doEndChild, id=self.key_endchild)
 		self.Bind(wx.EVT_KEY_UP, self.onKeyPress)
 		
 		self.accel_tbl = wx.AcceleratorTable([(wx.ACCEL_CTRL, ord('c'), self.key_copy),
-                                              (wx.ACCEL_CTRL, ord('v'), self.key_paste),
-                                              ])
+											(wx.ACCEL_CTRL, ord('v'), self.key_paste),
+											(wx.ACCEL_CTRL, ord('t'), self.key_child),
+											(wx.ACCEL_CTRL, ord('e'), self.key_endchild)
+											])
 		self.SetAcceleratorTable(self.accel_tbl)
 		
 # ---- Events ------------------------------------------------------- #
@@ -56,13 +63,15 @@ class MessageTree(wx.TreeCtrl):
 		keycode = event.GetKeyCode()
 		if keycode == wx.WXK_DELETE:
 			self.doDeleteChild(event)
+		if keycode == wx.WXK_TAB:
+			self.doCreateChild(self, event)
 		event.Skip()
 		
 	def onBeginLabelEdit(self, event):
 		"""Event handler for detecting when a label is about to be edited.
 	
-		   When the event occurs, if the label is blank (20 spaces), it is cleared
-		   for editing."""
+		When the event occurs, if the label is blank (20 spaces), it is cleared
+		for editing."""
 		selected = self.GetSelections()
 		self.labelEditSelected = selected[0]
 		if self.GetItemText( selected[0] ) == "                    ":
@@ -71,8 +80,8 @@ class MessageTree(wx.TreeCtrl):
 	def onEndLabelEdit(self, event):
 		"""Event handler for detecting when a label has finished being edited.
 		
-		   When the event occurs, check if the label was cleared, and if so, replace
-		   with 20 spaces."""
+		When the event occurs, check if the label was cleared, and if so, replace
+		with 20 spaces."""
 		try:
 			if self.GetItemText( self.labelEditSelected ) == "":
 				self.SetItemText( self.labelEditSelected, "                    " )
@@ -82,7 +91,7 @@ class MessageTree(wx.TreeCtrl):
 	def onBeginLabelDrag(self, event):
 		"""Event handler for detecting when a label is being dragged.
 		
-		   If only one label is selected, the dragging is permitted."""
+		If only one label is selected, the dragging is permitted."""
 		if (len(self.GetSelections()) == 1 and self.GetChildrenCount(event.GetItem()) == 0):
 			event.Allow()
 			self.dragItem = event.GetItem()
@@ -90,7 +99,7 @@ class MessageTree(wx.TreeCtrl):
 	def onEndLabelDrag(self, event):
 		"""Event handler for detecting when a label has finished being dragged.
 		
-		   When the event occurs, the data is moved to its new location."""
+		When the event occurs, the data is moved to its new location."""
 		if not event.GetItem().IsOk():
 			return
 		try:
@@ -118,7 +127,19 @@ class MessageTree(wx.TreeCtrl):
 	def doInsertChild(self, event):
 		"""Event handler for inserting a new child node after the selected node."""
 		self.insert_selected()
+	
+	def doCreateChild(self, event):
+		"""Create a repeating group"""
+		print "insert new child node"
+		selected = self.GetSelections()
+		rootItem = selected[0]
+		if len(selected) > 1: print "Only supporting single insert at this point..."
+		self.InsertItem(rootItem, idPrevious=selected[0], text="tag=value")
 		
+		
+	def doEndChild(self, event):
+		"""End a repeating group"""
+		print "move back to root"
 # ------------------------------------------------------------------- #
 		
 		
@@ -169,17 +190,18 @@ class MessageTree(wx.TreeCtrl):
 		
 	def insert_selected(self):
 		"""Insert a new child node after the selected node."""
-		rootItem = self.GetRootItem()
+		
 		selected = self.GetSelections()
+		rootItem = selected[0]
 		if len(selected) > 1: print "Only supporting single insert at this point..."
-		self.InsertItem(rootItem, idPrevious=selected[0], text="                    ")
+		self.InsertItem(rootItem.GetItemParent(), idPrevious=selected[0], text="                    ")
 		
 # --- End MessageTree class ----------------------------------------- #
 		
 
 def trim_SOH(message):
 	"""Trim all leading and any additional SOH characters and return a new copy of
-	   the message."""
+	the message."""
 	while message[0] == "\x01":
 		message = message[1:]
 	while message[len(message)-2] == "\x01":

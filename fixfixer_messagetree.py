@@ -156,16 +156,21 @@ class MessageTree(wx.TreeCtrl):
 			self.AppendItem(message_root, tag)
 		self.ExpandAll()
 
-	def get_message(self):
+	def get_message(self, root=None):
 		"""Returns the text from the MessageTree, delimted by SOH."""
 		message = ""
-		message_root = self.GetRootItem()
+		message_root = root
+		if not message_root:
+			message_root = self.GetRootItem()
 		first_tag, cookie = self.GetFirstChild(message_root)
 		message = self.GetItemText(first_tag) + "\x01"
 		next_tag, cookie = self.GetNextChild(message_root, cookie)
 		while next_tag.IsOk():
 			message = message + self.GetItemText(next_tag) + "\x01"
+			if self.ItemHasChildren(next_tag):
+				message = message + self.get_message(next_tag)
 			next_tag,cookie = self.GetNextChild(message_root, cookie)
+
 		message = trim_SOH(message)
 		return message
 		

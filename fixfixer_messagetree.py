@@ -194,7 +194,7 @@ class MessageTree(wx.TreeCtrl):
 		selected = self.GetSelections()
 		rootItem = selected[0]
 		if len(selected) > 1: print "Only supporting single insert at this point..."
-		self.InsertItem(rootItem.GetItemParent(), idPrevious=selected[0], text="                    ")
+		self.InsertItem(self.GetItemParent(rootItem), idPrevious=selected[0], text="                    ")
 		
 # --- End MessageTree class ----------------------------------------- #
 		

@@ -153,7 +153,8 @@ class MessageTree(wx.TreeCtrl):
 		message_root = self.AddRoot("Message")
 		tags = message.split('\x01')
 		for tag in tags:
-			self.AppendItem(message_root, tag)
+			if tag != "":
+				self.AppendItem(message_root, tag)
 		self.ExpandAll()
 
 	def get_message(self, root=None):

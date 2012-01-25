@@ -3,7 +3,14 @@ import py2exe
 import os
 import sys
 
-setup(windows=['fixfixer_main.py'])
+setup(
+	windows=[
+		{
+			"script": 'fixfixer_main.py',
+			"icon_resources":[(1, "fix-fixer.ico")]
+		}
+	]
+)
 
 os.chdir('dist')
 try:

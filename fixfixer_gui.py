@@ -21,6 +21,8 @@ class FixFixerGui(wx.Frame):
 		self.window_1 = wx.SplitterWindow(self, -1, style=wx.SP_3D|wx.SP_BORDER|wx.SP_LIVE_UPDATE)
 		self.window_1_pane_2 = wx.Panel(self.window_1, -1)
 		self.window_1_pane_1 = wx.Panel(self.window_1, -1, style=wx.TAB_TRAVERSAL|wx.FULL_REPAINT_ON_RESIZE)
+		_icon = wx.Icon("fix-fixer.ico", wx.BITMAP_TYPE_ICO)
+		self.SetIcon(_icon)
 		
 		# Menu Bar
 		self.frame_1_menubar = wx.MenuBar()

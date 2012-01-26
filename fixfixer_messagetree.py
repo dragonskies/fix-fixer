@@ -4,8 +4,11 @@ import pyperclip
 
 class MessageTree(wx.TreeCtrl):
 	"""An extended wx.TreeCtrl with added functionality."""
-	def __init__(self, window, tID):
+	def __init__(self, window, tID, ActionHistory):
 		wx.TreeCtrl.__init__(self, window, tID, style=wx.TR_HAS_BUTTONS|wx.TR_NO_LINES|wx.TR_DEFAULT_STYLE|wx.SUNKEN_BORDER|wx.TR_EDIT_LABELS|wx.TR_MULTIPLE)
+		
+		self.ActionHistory = ActionHistory
+		self.checklabel = 0
 		
 		# Set up the right-click popup menu.
 		self.popup = wx.Menu()
@@ -76,21 +79,36 @@ class MessageTree(wx.TreeCtrl):
 	
 		When the event occurs, if the label is blank (20 spaces), it is cleared
 		for editing."""
+		try:
+			self.ActionHistory.EndAdd('message_tree_edit', self.GetItemText(self.labelEditSelected))
+		except:
+			pass
 		selected = self.GetSelections()
 		self.labelEditSelected = selected[0]
+		self.labelEdit_oldlabel = self.GetItemText(selected[0])
+		self.ActionHistory.StartAdd('message_tree_edit', [selected[0], self.GetItemText(selected[0])])
 		if self.GetItemText( selected[0] ) == "                    ":
 			self.SetItemText( selected[0], "" )
+		
 			
 	def onEndLabelEdit(self, event):
 		"""Event handler for detecting when a label has finished being edited.
 		
 		When the event occurs, check if the label was cleared, and if so, replace
 		with 20 spaces."""
-		try:
-			if self.GetItemText( self.labelEditSelected ) == "":
-				self.SetItemText( self.labelEditSelected, "                    " )
-		except:
-			pass
+		if self.checklabel == 1:
+			try:
+				if self.GetItemText( self.labelEditSelected ) == "":
+					self.SetItemText( self.labelEditSelected, "                    " )
+			except:
+				pass
+#			if self.labelEdit_oldlabel == self.GetItemText(self.labelEditSelected):
+#				self.ActionHistory.EndAdd('null', 0)
+#			else:
+#				self.ActionHistory.EndAdd('market_data_edit', self.GetItemText(self.labelEditSelected))
+#			self.checklabel = 0
+#		else:
+#			self.checklabel = 1
 			
 	def onBeginLabelDrag(self, event):
 		"""Event handler for detecting when a label is being dragged.
@@ -133,7 +151,7 @@ class MessageTree(wx.TreeCtrl):
 		self.insert_selected()
 		
 	def doEditChild(self, event):
-		"""Event handler for editing a child node."""
+		
 		self.edit_selected()
 	
 	def doCreateChild(self, event):
@@ -194,6 +212,7 @@ class MessageTree(wx.TreeCtrl):
 		selected = self.GetSelections()
 		pasteString = pyperclip.paste()
 		if len(selected) > 1: print "Only supporting single paste at this point..."
+		self.ActionHistory.Write('message_tree_paste', [selected[0], self.GetItemText(selected[0]), pasteString])
 		self.SetItemText(selected[0], pasteString)
 		
 	def delete_selected(self):
@@ -213,7 +232,12 @@ class MessageTree(wx.TreeCtrl):
 	def edit_selected(self):
 		"""Edit the child node."""
 		selected = self.GetSelections()
+#		old_label = self.GetItemText(selected[0])
+
 		self.EditLabel(selected[0])
+#		new_label = self.GetItemText(selected[0])
+#		if old_label != self.GetItemText(selected[0]):
+#			self.ActionHistory.Write('message_tree_edit', [selected[0], old_label, new_label])
 		
 # --- End MessageTree class ----------------------------------------- #
 		

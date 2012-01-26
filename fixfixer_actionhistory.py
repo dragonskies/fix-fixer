@@ -27,11 +27,14 @@ class FixAction():
 			# data[2] = new value
 			self.parent.message_tree.SetItemText(self.data[0], self.data[1])
 		
-#		elif self.name == 'message_tree_insert':
+		elif self.name == 'message_tree_insert':
+			self.parent.message_tree.set_message(self.data[0])
 		
-#		elif self.name == 'message_tree_delete':
+		elif self.name == 'message_tree_delete':
+			self.parent.message_tree.set_message(self.data[0])
 		
-#		elif self.name == 'message_tree_move':
+		elif self.name == 'message_tree_move':
+			self.parent.message_tree.set_message(self.data[0])
 	
 	def RedoAction(self):
 		if self.name == 'clear':
@@ -47,11 +50,14 @@ class FixAction():
 		elif self.name == 'message_tree_paste':
 			self.parent.message_tree.SetItemText(self.data[0], self.data[2])
 		
-#		elif self.name == 'message_tree_insert':
+		elif self.name == 'message_tree_insert':
+			self.parent.message_tree.set_message(self.data[1])
 		
-#		elif self.name == 'message_tree_delete':
+		elif self.name == 'message_tree_delete':
+			self.parent.message_tree.set_message(self.data[1])
 		
-#		elif self.name == 'message_tree_move':
+		elif self.name == 'message_tree_move':
+			self.parent.message_tree.set_message(self.data[1])
 
 class FixActionHistory():
 	def __init__(self, parent):

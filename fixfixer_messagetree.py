@@ -16,7 +16,7 @@ class MessageTree(wx.TreeCtrl):
 		self.popup_paste =wx.MenuItem(self.popup, 1, "&Paste\tCtrl-V", "Replace item", wx.ITEM_NORMAL)
 		self.popup_delete = wx.MenuItem(self.popup, 2, "&Delete\tDelete", "Delete item", wx.ITEM_NORMAL)
 		self.popup_insert = wx.MenuItem(self.popup, 3, "Insert", "Insert new item", wx.ITEM_NORMAL)
-		self.popup_edit = wx.MenuItem(self.popup, 3, "Edit", "Edit item", wx.ITEM_NORMAL)
+		self.popup_edit = wx.MenuItem(self.popup, 4, "Edit", "Edit item", wx.ITEM_NORMAL)
 		self.popup.AppendItem(self.popup_edit)
 		self.popup.AppendItem(self.popup_copy)
 		self.popup.AppendItem(self.popup_paste)
@@ -115,6 +115,7 @@ class MessageTree(wx.TreeCtrl):
 		
 		If only one label is selected, the dragging is permitted."""
 		if (len(self.GetSelections()) == 1 and self.GetChildrenCount(event.GetItem()) == 0):
+			self.ActionHistory.StartAdd('message_tree_move', self.get_message())
 			event.Allow()
 			self.dragItem = event.GetItem()
 		
@@ -133,6 +134,7 @@ class MessageTree(wx.TreeCtrl):
 		text = self.GetItemText(old)
 		self.Delete(old)
 		self.InsertItem(parent, new, text)
+		self.ActionHistory.EndAdd('message_tree_move', self.get_message())
 		
 	def doCopyChild(self, event):
 		"""Event handler for copying a child node."""
@@ -217,17 +219,22 @@ class MessageTree(wx.TreeCtrl):
 		
 	def delete_selected(self):
 		"""Delete the selected children nodes."""
+		old_message = self.get_message()
 		selected = self.GetSelections()
 		for item in selected:
 			self.Delete(item)
+		new_message = self.get_message()
+		self.ActionHistory.Write('message_tree_delete', [old_message, new_message])
 		
 	def insert_selected(self):
 		"""Insert a new child node after the selected node."""
-		
+		old_message = self.get_message()
 		selected = self.GetSelections()
 		rootItem = selected[0]
 		if len(selected) > 1: print "Only supporting single insert at this point..."
 		self.InsertItem(self.GetItemParent(rootItem), idPrevious=selected[0], text="                    ")
+		new_message = self.get_message()
+		self.ActionHistory.Write('message_tree_insert', [old_message, new_message])
 		
 	def edit_selected(self):
 		"""Edit the child node."""

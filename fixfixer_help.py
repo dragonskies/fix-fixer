@@ -7,6 +7,8 @@ class FixFixerHelpFrame(wx.Frame):
 	def __init__(self, *args, **kwds):
 		kwds["style"] = wx.DEFAULT_FRAME_STYLE
 		wx.Frame.__init__(self, *args, **kwds)
+		_icon = wx.Icon("fix-fixer.ico", wx.BITMAP_TYPE_ICO)
+		self.SetIcon(_icon)
 
 		# Tool Bar
 		self.toolbar = wx.ToolBar(self, -1, style=wx.TB_HORIZONTAL | wx.TB_FLAT | wx.TB_DOCKABLE)
@@ -31,7 +33,7 @@ class FixFixerHelpFrame(wx.Frame):
 		
 	def __set_properties(self):
 		# begin wxGlade: MyFrame.__set_properties
-		self.SetTitle("Help")
+		self.SetTitle("Help - Fix Message fixer")
 		self.SetSize((640, 480))
 		self.toolbar.Realize()
 		# end wxGlade

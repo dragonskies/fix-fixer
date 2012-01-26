@@ -7,6 +7,7 @@ import os
 
 import fixfixer_about
 import fixfixer_messagetree
+import fixfixer_help
 
 # begin wxGlade: extracode
 # end wxGlade
@@ -35,12 +36,14 @@ class FixFixerGui(wx.Frame):
 		self.LoadMessage = wx.MenuItem(wxglade_tmp_menu, 1, "&Load\tCtrl-O", "Load_message", wx.ITEM_NORMAL)
 		self.SaveMessage = wx.MenuItem(wxglade_tmp_menu, 2, "&Save\tCtrl-S", "Save_message", wx.ITEM_NORMAL)
 		self.ExitProgram = wx.MenuItem(wxglade_tmp_menu, wx.ID_EXIT, "&Exit\tCtrl-Q", "Quit", wx.ITEM_NORMAL)
-		self.ShowAbout = wx.MenuItem(wxglade_help_menu, 1, "About", "About Dialog", wx.ITEM_NORMAL)
+		self.ShowHelp = wx.MenuItem(wxglade_help_menu, 3, "Help", "Help Dialog", wx.ITEM_NORMAL)
+		self.ShowAbout = wx.MenuItem(wxglade_help_menu, 4, "About", "About Dialog", wx.ITEM_NORMAL)
 		wxglade_edit_menu.AppendItem(self.ClearMessage)
 		wxglade_tmp_menu.AppendItem(self.LoadMessage)
 		wxglade_tmp_menu.AppendItem(self.SaveMessage)
 		wxglade_tmp_menu.AppendSeparator()
 		wxglade_tmp_menu.AppendItem(self.ExitProgram)
+		wxglade_help_menu.AppendItem(self.ShowHelp)
 		wxglade_help_menu.AppendItem(self.ShowAbout)
 		self.frame_1_menubar.Append(wxglade_tmp_menu, "File")
 		self.frame_1_menubar.Append(wxglade_edit_menu, "Edit")
@@ -65,6 +68,7 @@ class FixFixerGui(wx.Frame):
 		self.Bind(wx.EVT_BUTTON, self.message_create, self.but)
 		self.Bind(wx.EVT_MENU, self.load_message, self.LoadMessage)
 		self.Bind(wx.EVT_MENU, self.save_message, self.SaveMessage)
+		self.Bind(wx.EVT_MENU, self.show_help, self.ShowHelp)
 		self.Bind(wx.EVT_MENU, self.show_about, self.ShowAbout)
 		
 		self.key_load = wx.NewId()
@@ -114,7 +118,13 @@ class FixFixerGui(wx.Frame):
 		self.Close()
 		
 	def show_about(self, event):
+		"""Event handler to show the About Dialog."""
 		self.AboutDialog.show()
+		
+	def show_help(self, event):
+		"""Event handler to show the Help Dialog."""
+		self.HelpDialog = fixfixer_help.FixFixerHelpFrame(self)
+		self.HelpDialog.show()
 		
 	def load_message(self, event):
 		"""Load message from .TXT file."""
@@ -161,6 +171,7 @@ class FixFixerGui(wx.Frame):
 		
 	def message_clear(self, event):
 		"""Clears the MessageTree contents."""
+		self.market_data.SetValue("")
 		self.message_tree.clear()
 	
 # end of class MyFrame

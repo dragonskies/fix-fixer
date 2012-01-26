@@ -1,6 +1,7 @@
 import wx
 
 class AboutFixFixer(wx.AboutDialogInfo):
+	"""About Dialog for Fix Message fixer"""
 	def __init__(self, parent):
 		wx.AboutDialogInfo.__init__(self)
 		self.parent = parent
@@ -8,7 +9,7 @@ class AboutFixFixer(wx.AboutDialogInfo):
 		self.copyright = "\xa9 2012 Timothy Davis"
 		self.description = "Message editor for the FIX Protocol <http://fixprotocol.org/>"
 		self.developers = ["Timothy Davis", "Sean Davis"]
-		self.docwriters = [""]
+		self.docwriters = ["Timothy Davis"]
 		self.icon = "fix-fixer.ico"
 		self.license = ""
 		self.name = "Fix Message fixer"

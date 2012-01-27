@@ -190,7 +190,6 @@ class FixFixerGui(wx.Frame):
 		# Do not clear market_data unless MessageTree is valid.
 		try:
 			message = self.message_tree.get_message()
-			self.market_data.SetMessage("")
 			self.market_data.SetMessage(message)
 		except: 
 			pass

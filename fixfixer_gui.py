@@ -6,6 +6,7 @@ import wx
 import os
 
 import fixfixer_actionhistory
+import fixfixer_marketdata
 import fixfixer_about
 import fixfixer_messagetree
 import fixfixer_help
@@ -62,7 +63,7 @@ class FixFixerGui(wx.Frame):
 		# Menu Bar end
 
 		
-		self.market_data = wx.TextCtrl(self.window_1_pane_1, -1, "", style=wx.TE_PROCESS_ENTER|wx.TE_MULTILINE|wx.TE_RICH|wx.TE_LINEWRAP)
+		self.market_data = fixfixer_marketdata.MarketData(self.window_1_pane_1, -1, "")
 		self.sort_button = wx.Button(self.window_1_pane_1, -1, "Sort message", style=wx.BU_BOTTOM)
 		self.message_tree = fixfixer_messagetree.MessageTree(self.window_1_pane_2, -1, self.ActionHistory)
 		self.but = wx.Button(self.window_1_pane_2, -1, "Create message")
@@ -166,7 +167,7 @@ class FixFixerGui(wx.Frame):
 			return
 		message_file_dir = message_file_dialog.GetPath()
 		f = file(message_file_dir, 'r')
-		self.market_data.SetValue(f.read())
+		self.market_data.SetMessage(f.read())
 		f.close()
 		self.ActionHistory.ClearHistory()
 		
@@ -189,8 +190,8 @@ class FixFixerGui(wx.Frame):
 		# Do not clear market_data unless MessageTree is valid.
 		try:
 			message = self.message_tree.get_message()
-			self.market_data.SetValue("")
-			self.market_data.SetValue(message)
+			self.market_data.SetMessage("")
+			self.market_data.SetMessage(message)
 		except: 
 			pass
 

@@ -10,6 +10,7 @@ import fixfixer_marketdata
 import fixfixer_about
 import fixfixer_messagetree
 import fixfixer_help
+import fixfixer_tooltip
 
 # begin wxGlade: extracode
 # end wxGlade
@@ -29,6 +30,8 @@ class FixFixerGui(wx.Frame):
 		self.window_1_pane_1 = wx.Panel(self.window_1, -1, style=wx.TAB_TRAVERSAL|wx.FULL_REPAINT_ON_RESIZE)
 		_icon = wx.Icon("fix-fixer.ico", wx.BITMAP_TYPE_ICO)
 		self.SetIcon(_icon)
+		self.tooltip = fixfixer_tooltip.fix_tooltip("tag description")
+		self.SetToolTip(self.tooltip)
 		
 		self.market_data_text = ""
 		
@@ -88,6 +91,7 @@ class FixFixerGui(wx.Frame):
 		
 		self.Bind(wx.EVT_TEXT, self.onSetText, self.market_data)
 		
+		
 		self.key_load = wx.NewId()
 		self.key_save = wx.NewId()
 		self.key_quit = wx.NewId()
@@ -101,11 +105,11 @@ class FixFixerGui(wx.Frame):
 		self.Bind(wx.EVT_MENU, self.redo_action, id=self.key_redo)
 
 		self.accel_tbl = wx.AcceleratorTable([(wx.ACCEL_CTRL, ord('O'), self.key_load),
-                                              (wx.ACCEL_CTRL, ord('S'), self.key_save),
-                                              (wx.ACCEL_CTRL, ord('q'), self.key_quit),
-											  (wx.ACCEL_CTRL, ord('z'), self.key_undo),
-											  (wx.ACCEL_CTRL, ord('y'), self.key_redo)
-                                              ])
+											(wx.ACCEL_CTRL, ord('S'), self.key_save),
+											(wx.ACCEL_CTRL, ord('q'), self.key_quit),
+											(wx.ACCEL_CTRL, ord('z'), self.key_undo),
+											(wx.ACCEL_CTRL, ord('y'), self.key_redo),
+											])
 		self.SetAcceleratorTable(self.accel_tbl)
 		
 		
@@ -205,8 +209,11 @@ class FixFixerGui(wx.Frame):
 	def message_clear(self, event):
 		"""Clears the MessageTree contents."""
 		self.ActionHistory.Write('clear',
-								  (self.market_data.GetValue(), self.message_tree.get_message()))
+								(self.market_data.GetValue(), self.message_tree.get_message()))
 		self.market_data.ChangeValue("")
 		self.message_tree.clear()
 	
+	def onGetFocus(self, event):
+		tooltip.setToolTip_desc()
+		
 # end of class MyFrame

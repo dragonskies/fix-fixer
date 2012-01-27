@@ -72,6 +72,8 @@ class MessageTree(wx.TreeCtrl):
 			self.doDeleteChild(event)
 		if keycode == wx.WXK_TAB:
 			self.doCreateChild(self, event)
+		if keycode == wx.WXK_F1:
+			self.doShowTagHelp()
 		event.Skip()
 		
 	def onBeginLabelEdit(self, event):
@@ -248,6 +250,14 @@ class MessageTree(wx.TreeCtrl):
 #		new_label = self.GetItemText(selected[0])
 #		if old_label != self.GetItemText(selected[0]):
 #			self.ActionHistory.Write('message_tree_edit', [selected[0], old_label, new_label])
+	
+	def doShowTagHelp():
+		#get selected marketdata tree item
+		selected_tag = message_tree.GetSelection()
+		selected_tag_text = selected_tag.GetItemText()
+		tag_text = selected_tag_text.split("=")[0]
+		desc_text = fixfixer_xml.find_tag_desc(tag_text)
+		self.SetTip(desc_text)
 		
 # --- End MessageTree class ----------------------------------------- #
 		

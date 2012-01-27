@@ -1,13 +1,15 @@
-import xml
+import xml.etree.ElementTree
+import os
 
-class fixxml(xml):
-    def __init__(self):
-        #does the file exists
-        # set to a static xml file
-        #The 5 XML files are
+fix_xml = xml.etree.ElementTree.parse("fields.xml")
 
-        #1.Enums.xml
-        #2.Fileds.xml
-        #3.Components.xml
-        #4.MsgType.xml
-        #5.MsgContents.xml
+def find_tag_desc(find_tag):
+    for each_element in fix_xml.getroot().getchildren():
+        tag_text=each_element.find('.//Tag')
+        #print tag_text.text
+        desc_text = each_element.find('.//Desc')
+        # print desc_text.text
+        if tag_text.text == find_tag:
+            return desc_text.text
+    #nothing found
+    return "Not found"

@@ -32,6 +32,7 @@ class MarketData(wx.TextCtrl):
 	def doPaste(self, event):
 		insertionpoint = self.GetInsertionPoint()
 		selection = self.GetSelection()
+		message = self.GetMessage()
 		message = message[:selection[0]] + pyperclip.paste() + message[selection[1]:]
 		self.SetMessage(message)
 		

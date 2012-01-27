@@ -182,7 +182,7 @@ class FixFixerGui(wx.Frame):
 			return
 		message_file_dir = message_file_dialog.GetPath()
 		f = file(message_file_dir, 'w')
-		f.write(self.market_data.GetValue())
+		f.write(self.market_data.GetMessage())
 		f.close()
 		
 	def message_create(self, event):
@@ -198,7 +198,7 @@ class FixFixerGui(wx.Frame):
 		
 	def message_sort(self, event):
 		"""Updates the MessageTree to reflect the contents of the market data field."""
-		market_data = self.market_data.GetValue()
+		market_data = self.market_data.GetMessage()
 		self.message_tree.set_message(market_data)
 		
 	def message_clear(self, event):

@@ -252,14 +252,14 @@ class MessageTree(wx.TreeCtrl):
 	
 	def doShowTagHelp(self, event):
 		#get selected marketdata tree item
-		selected_tag = self.GetSelections()
-		selected_tag_text = self.GetItemText(selected_tag[0])
+		selected_tag_text = self.GetItemText(event.GetItem())
 		tag_text = selected_tag_text.split("=")[0]
 		desc_text = fixfixer_xml.find_tag_desc(tag_text)
 		print desc_text
 		#tag_tip = wx.ToolTip(desc_text)
 		#self.ToolTip_Enable(True)
-		self.SetToolTipString(desc_text)
+		event.SetToolTip(desc_text)
+		print "tt: " + event.GetToolTip()
 		
 # --- End MessageTree class ----------------------------------------- #
 		

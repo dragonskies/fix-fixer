@@ -10,7 +10,7 @@ import fixfixer_marketdata
 import fixfixer_about
 import fixfixer_messagetree
 import fixfixer_help
-import fixfixer_tooltip
+#import fixfixer_tooltip
 
 # begin wxGlade: extracode
 # end wxGlade

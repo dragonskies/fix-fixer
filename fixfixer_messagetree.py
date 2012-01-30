@@ -255,11 +255,7 @@ class MessageTree(wx.TreeCtrl):
 		selected_tag_text = self.GetItemText(event.GetItem())
 		tag_text = selected_tag_text.split("=")[0]
 		desc_text = fixfixer_xml.find_tag_desc(tag_text)
-		print desc_text
-		#tag_tip = wx.ToolTip(desc_text)
-		#self.ToolTip_Enable(True)
 		event.SetToolTip(desc_text)
-		print "tt: " + event.GetToolTip()
 		
 # --- End MessageTree class ----------------------------------------- #
 		

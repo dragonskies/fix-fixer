@@ -2,6 +2,7 @@
 
 import wx
 import fixfixer_gui
+import fixfixer_xml
 
 
 

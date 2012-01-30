@@ -1,5 +1,6 @@
 import wx
 import pyperclip
+import fixfixer_xml
 
 
 class MessageTree(wx.TreeCtrl):
@@ -39,7 +40,7 @@ class MessageTree(wx.TreeCtrl):
 		self.Bind(wx.EVT_TREE_SEL_CHANGING, self.onEndLabelEdit, self)
 		self.Bind(wx.EVT_TREE_BEGIN_DRAG, self.onBeginLabelDrag, self)
 		self.Bind(wx.EVT_TREE_END_DRAG, self.onEndLabelDrag, self)
-		
+		self.Bind(wx.EVT_TREE_ITEM_GETTOOLTIP, self.doShowTagHelp, self)
 		self.key_copy = wx.NewId()
 		self.key_paste = wx.NewId()
 		self.key_child = wx.NewId()
@@ -72,8 +73,6 @@ class MessageTree(wx.TreeCtrl):
 			self.doDeleteChild(event)
 		if keycode == wx.WXK_TAB:
 			self.doCreateChild(self, event)
-		if keycode == wx.WXK_F1:
-			self.doShowTagHelp()
 		event.Skip()
 		
 	def onBeginLabelEdit(self, event):
@@ -251,13 +250,16 @@ class MessageTree(wx.TreeCtrl):
 #		if old_label != self.GetItemText(selected[0]):
 #			self.ActionHistory.Write('message_tree_edit', [selected[0], old_label, new_label])
 	
-	def doShowTagHelp():
+	def doShowTagHelp(self, event):
 		#get selected marketdata tree item
-		selected_tag = message_tree.GetSelection()
-		selected_tag_text = selected_tag.GetItemText()
+		selected_tag = self.GetSelections()
+		selected_tag_text = self.GetItemText(selected_tag[0])
 		tag_text = selected_tag_text.split("=")[0]
 		desc_text = fixfixer_xml.find_tag_desc(tag_text)
-		self.SetTip(desc_text)
+		print desc_text
+		#tag_tip = wx.ToolTip(desc_text)
+		#self.ToolTip_Enable(True)
+		self.SetToolTipString(desc_text)
 		
 # --- End MessageTree class ----------------------------------------- #
 		

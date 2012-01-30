@@ -30,9 +30,7 @@ class FixFixerGui(wx.Frame):
 		self.window_1_pane_1 = wx.Panel(self.window_1, -1, style=wx.TAB_TRAVERSAL|wx.FULL_REPAINT_ON_RESIZE)
 		_icon = wx.Icon("fix-fixer.ico", wx.BITMAP_TYPE_ICO)
 		self.SetIcon(_icon)
-		self.tooltip = fixfixer_tooltip.fix_tooltip("tag description")
-		self.SetToolTip(self.tooltip)
-		
+				
 		self.market_data_text = ""
 		
 		# Menu Bar

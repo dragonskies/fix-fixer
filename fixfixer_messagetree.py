@@ -24,6 +24,18 @@ class MessageTree(wx.TreeCtrl):
         self.popup.AppendSeparator()
         self.popup.AppendItem(self.popup_delete)
         self.popup.AppendItem(self.popup_insert)
+        
+        # Drag'n'Drop Popup
+        self.dnd_popup = wx.Menu()
+        self.move_above = wx.MenuItem(self.dnd_popup, 5, "Insert Above", "Insert item above", wx.ITEM_NORMAL)
+        self.move_below = wx.MenuItem(self.dnd_popup, 6, "Insert Below", "Insert item below", wx.ITEM_NORMAL)
+        self.add_child = wx.MenuItem(self.dnd_popup, 7, "Add as child", "Add item as child", wx.ITEM_NORMAL)
+        self.move_cancel = wx.MenuItem(self.dnd_popup, 5, "Cancel", "Cancel move", wx.ITEM_NORMAL)
+        self.dnd_popup.AppendItem(self.move_above)
+        self.dnd_popup.AppendItem(self.move_below)
+        self.dnd_popup.AppendItem(self.add_child)
+        self.dnd_popup.AppendSeparator()
+        self.dnd_popup.AppendItem(self.move_cancel)
 
 
         # Add bindings for popup menu
@@ -33,6 +45,12 @@ class MessageTree(wx.TreeCtrl):
         self.Bind(wx.EVT_MENU, self.doInsertChild, self.popup_insert)
         self.Bind(wx.EVT_MENU, self.doEditChild, self.popup_edit)
         self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.onRClickPopup, self)
+        
+        # Add binding for Drag'n'Drop
+        self.Bind(wx.EVT_MENU, self.dnd_popup_result_above, self.move_above)
+        self.Bind(wx.EVT_MENU, self.dnd_popup_result_below, self.move_below)
+        self.Bind(wx.EVT_MENU, self.dnd_popup_result_child, self.add_child)
+        self.Bind(wx.EVT_MENU, self.dnd_popup_result_cancel, self.move_cancel)
 
         # Add bindings for label interaction
         self.Bind(wx.EVT_TREE_BEGIN_LABEL_EDIT, self.onBeginLabelEdit, self)
@@ -129,11 +147,20 @@ class MessageTree(wx.TreeCtrl):
             old = self.dragItem
         except:
             return
+        self.PopupMenu(self.dnd_popup, event.GetPoint())
+        if self.dnd_popup_selected == 'cancel': return
         new = event.GetItem()
         parent = self.GetItemParent(new)
         text = self.GetItemText(old)
         self.Delete(old)
-        self.InsertItem(parent, new, text)
+        if self.dnd_popup_selected == 'above':
+            self.InsertItemAbove(parent, new, text)
+        elif self.dnd_popup_selected == 'below':
+            self.InsertItem(parent, new, text)
+        elif self.dnd_popup_selected == 'child':
+            rootItem = new
+            self.InsertItem(rootItem, idPrevious=new, text=text)
+            self.Expand(new)
         self.ActionHistory.EndAdd('message_tree_move', self.get_message())
 		
     def doCopyChild(self, event):
@@ -167,6 +194,18 @@ class MessageTree(wx.TreeCtrl):
     def doEndChild(self, event):
         """End a repeating group"""
         print "move back to root"
+        
+    def dnd_popup_result_above(self, event):
+        self.dnd_popup_selected = 'above'
+        
+    def dnd_popup_result_below(self, event):
+        self.dnd_popup_selected = 'below'
+        
+    def dnd_popup_result_child(self, event):
+        self.dnd_popup_selected = 'child'
+        
+    def dnd_popup_result_cancel(self, event):
+        self.dnd_popup_selected = 'cancel'
 # ------------------------------------------------------------------- #
 		
 		

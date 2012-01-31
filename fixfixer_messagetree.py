@@ -64,6 +64,8 @@ class MessageTree(wx.TreeCtrl):
 		
     def onRClickPopup(self, event):
         """Event handler for detecting a right click and presenting a popup menu."""
+        disabled = ['Message']
+        if self.GetItemText(self.GetSelections()[0]) in disabled: return
         self.PopupMenu(self.popup, event.GetPoint())
 
     def onKeyPress(self, event):
@@ -206,13 +208,17 @@ class MessageTree(wx.TreeCtrl):
 		
     def copy_selected(self):
         """Copy the text contents of the selected node."""
+        disabled = ['Message']
         selected = self.GetSelections()
+        if self.GetItemText(selected[0]) in disabled: return
         if len(selected) > 1: print "Only supporting single copy at this point..."
         pyperclip.copy( str( self.GetItemText( selected[0] ) ) )
 
     def paste_selected(self):
         """Paste the contents of the clipboard into the selected node."""
+        disabled = ['Message']
         selected = self.GetSelections()
+        if self.GetItemText(selected[0]) in disabled: return
         pasteString = pyperclip.paste()
         if len(selected) > 1: print "Only supporting single paste at this point..."
         self.ActionHistory.Write('message_tree_paste', [selected[0], self.GetItemText(selected[0]), pasteString])
@@ -220,8 +226,10 @@ class MessageTree(wx.TreeCtrl):
 		
     def delete_selected(self):
         """Delete the selected children nodes."""
-        old_message = self.get_message()
+        disabled = ['Message']
         selected = self.GetSelections()
+        if self.GetItemText(selected[0]) in disabled: return
+        old_message = self.get_message()
         for item in selected:
             self.Delete(item)
         new_message = self.get_message()
@@ -229,8 +237,10 @@ class MessageTree(wx.TreeCtrl):
 		
     def insert_selected(self):
         """Insert a new child node after the selected node."""
-        old_message = self.get_message()
+        disabled = ['Message']
         selected = self.GetSelections()
+        if self.GetItemText(selected[0]) in disabled: return
+        old_message = self.get_message()
         rootItem = selected[0]
         if len(selected) > 1: print "Only supporting single insert at this point..."
         self.InsertItem(self.GetItemParent(rootItem), idPrevious=selected[0], text="                    ")
@@ -244,7 +254,9 @@ class MessageTree(wx.TreeCtrl):
 	
     def doShowTagHelp(self, event):
         #get selected marketdata tree item
+        disabled = ['Message']
         selected_tag_text = self.GetItemText(event.GetItem())
+        if selected_tag_text in disabled: return
         tag_text = selected_tag_text.split("=")[0]
         desc_text = fixfixer_xml.find_tag_desc(tag_text)
         event.SetToolTip(desc_text)

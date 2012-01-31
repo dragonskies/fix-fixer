@@ -40,7 +40,7 @@ class MarketData(wx.TextCtrl):
 		self.SelectAll()
 		
 	def SetMessage(self, message):
-		message = trim_SOH(message)
+		if "\x01" in message: message = trim_SOH(message)
 		message = message.replace('\x01', '|')
 		self.SetValue(message)
 		
@@ -51,6 +51,8 @@ class MarketData(wx.TextCtrl):
 		
 	def Clear(self):
 		self.SetMessage("")
+        
+
 		
 def trim_SOH(message):
 	"""Trim all leading and any additional SOH characters and return a new copy of

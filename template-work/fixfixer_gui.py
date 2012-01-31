@@ -11,6 +11,8 @@ import fixfixer_about
 import fixfixer_messagetree
 import fixfixer_help
 #import fixfixer_tooltip
+import fixfixer_template1
+import fixfixer_template2
 
 # begin wxGlade: extracode
 # end wxGlade
@@ -44,6 +46,7 @@ class FixFixerGui(wx.Frame):
 		self.Redo.Enable(False)
 		self.ClearMessage = wx.MenuItem(wxglade_edit_menu, 0, "Clear", "Clear_Message", wx.ITEM_NORMAL)
 		self.LoadMessage = wx.MenuItem(wxglade_tmp_menu, 1, "&Load\tCtrl-O", "Load_message", wx.ITEM_NORMAL)
+		self.CreateTemplate = wx.MenuItem(wxglade_tmp_menu, 5, "&Template\tCtrl-T", "Template_message", wx.ITEM_NORMAL)
 		self.SaveMessage = wx.MenuItem(wxglade_tmp_menu, 2, "&Save\tCtrl-S", "Save_message", wx.ITEM_NORMAL)
 		self.ExitProgram = wx.MenuItem(wxglade_tmp_menu, wx.ID_EXIT, "&Exit\tCtrl-Q", "Quit", wx.ITEM_NORMAL)
 		self.ShowHelp = wx.MenuItem(wxglade_help_menu, 3, "Help", "Help Dialog", wx.ITEM_NORMAL)
@@ -53,6 +56,7 @@ class FixFixerGui(wx.Frame):
 		wxglade_edit_menu.AppendSeparator()
 		wxglade_edit_menu.AppendItem(self.ClearMessage)
 		wxglade_tmp_menu.AppendItem(self.LoadMessage)
+		wxglade_tmp_menu.AppendItem(self.CreateTemplate)
 		wxglade_tmp_menu.AppendItem(self.SaveMessage)
 		wxglade_tmp_menu.AppendSeparator()
 		wxglade_tmp_menu.AppendItem(self.ExitProgram)
@@ -83,6 +87,7 @@ class FixFixerGui(wx.Frame):
 		self.Bind(wx.EVT_BUTTON, self.message_sort, self.sort_button)
 		self.Bind(wx.EVT_BUTTON, self.message_create, self.but)
 		self.Bind(wx.EVT_MENU, self.load_message, self.LoadMessage)
+		self.Bind(wx.EVT_MENU, self.create_template, self.CreateTemplate)
 		self.Bind(wx.EVT_MENU, self.save_message, self.SaveMessage)
 		self.Bind(wx.EVT_MENU, self.show_help, self.ShowHelp)
 		self.Bind(wx.EVT_MENU, self.show_about, self.ShowAbout)
@@ -174,6 +179,21 @@ class FixFixerGui(wx.Frame):
 		self.market_data.SetMessage(f.read())
 		f.close()
 		self.ActionHistory.ClearHistory()
+	
+	def create_template(self, event):
+		dialog = wx.MessageDialog(self, "If you continue you will lose the current message tree and paste bin!", "Warning", wx.CANCEL|wx.OK|wx.ICON_QUESTION)
+		if dialog.ShowModal() == False:
+			return 0
+		dialog.Destroy()
+		
+		print "running template maker"
+		template1 = fixfixer_template1.create(self)
+		result = template1.ShowModal()
+		print template1.GetMessageType()
+		if result == 1:
+			if template1.GetMessageType() == 0:
+				template2 = fixfixer_template2.create(self)
+				result2 = template2.ShowModal()
 		
 	def save_message(self, event):
 		"""Save message to .TXT file."""

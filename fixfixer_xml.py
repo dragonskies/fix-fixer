@@ -10,6 +10,6 @@ def find_tag_desc(find_tag):
         desc_text = each_element.find('.//Desc')
         # print desc_text.text
         if tag_text.text == find_tag:
-            return desc_text.text
+            return str(desc_text.text)
     #nothing found
     return "Not found"

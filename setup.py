@@ -23,7 +23,7 @@ def remove_executables():
 
 def update_dependencies():
 	print "\n*** update dependencies ***"
-	dependencies = ['fix-fixer.ico', 'home.png', 'prev.png', 'next.png', 'help.html', 'fix_screenshot.jpg']
+	dependencies = ['fix-fixer.ico', 'home.png', 'prev.png', 'next.png', 'help.html', 'fix_screenshot.jpg', 'Fields.xml']
 	os.chdir('dist')
 
 	for file in dependencies:
@@ -39,6 +39,7 @@ def update_dependencies():
 	for file in dependencies:
 		if os.path.isfile(file):
 			try:
+				print "copying " + os.path.abspath(file)
 				shutil.copyfile(file, os.path.join('dist', file))
 			except Exception:
 				print "The file " + file + " could not be copied.  Is the write path read-only?"

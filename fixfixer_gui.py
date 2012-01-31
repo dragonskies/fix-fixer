@@ -66,7 +66,7 @@ class FixFixerGui(wx.Frame):
 		# Menu Bar end
 
 		
-		self.market_data = fixfixer_marketdata.MarketData(self.window_1_pane_1, -1, "")
+		self.market_data = fixfixer_marketdata.MarketData(self.window_1_pane_1, -1, self.ActionHistory)
 		self.sort_button = wx.Button(self.window_1_pane_1, -1, "Sort message", style=wx.BU_BOTTOM)
 		self.message_tree = fixfixer_messagetree.MessageTree(self.window_1_pane_2, -1, self.ActionHistory)
 		self.but = wx.Button(self.window_1_pane_2, -1, "Create message")
@@ -122,8 +122,8 @@ class FixFixerGui(wx.Frame):
 		# begin wxGlade: MyFrame.__do_layout
 		sizer_1 = wx.BoxSizer(wx.VERTICAL)
 		sizer_3 = wx.BoxSizer(wx.VERTICAL)
-		sizer_2 = wx.GridSizer(2, 1, 5, 6)
-		sizer_2.Add(self.market_data, 0, wx.ALL|wx.EXPAND, 0)
+		sizer_2 = wx.BoxSizer(wx.VERTICAL)
+		sizer_2.Add(self.market_data, 1, wx.ALL|wx.EXPAND, 0)
 		sizer_2.Add(self.sort_button, 0, wx.ALL|wx.ALIGN_BOTTOM|wx.ALIGN_CENTER_HORIZONTAL, 0)
 		self.window_1_pane_1.SetSizer(sizer_2)
 		sizer_3.Add(self.message_tree, 1, wx.EXPAND, 0)

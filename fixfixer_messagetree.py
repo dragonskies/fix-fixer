@@ -102,12 +102,11 @@ class MessageTree(wx.TreeCtrl):
 
         When the event occurs, check if the label was cleared, and if so, replace
         with 20 spaces."""
-        if self.checklabel == 1:
-            try:
-                if self.GetItemText( self.labelEditSelected ) == "":
-                    self.SetItemText( self.labelEditSelected, "                    " )
-            except:
-                pass
+        try:
+            if self.GetItemText( self.labelEditSelected ) == "":
+                self.SetItemText( self.labelEditSelected, "                    " )
+        except:
+            pass
 			
     def onBeginLabelDrag(self, event):
         """Event handler for detecting when a label is being dragged.

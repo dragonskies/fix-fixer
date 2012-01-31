@@ -9,7 +9,6 @@ class MessageTree(wx.TreeCtrl):
         wx.TreeCtrl.__init__(self, window, tID, style=wx.TR_HAS_BUTTONS|wx.TR_NO_LINES|wx.TR_DEFAULT_STYLE|wx.SUNKEN_BORDER|wx.TR_EDIT_LABELS|wx.TR_MULTIPLE)
 
         self.ActionHistory = ActionHistory
-        self.checklabel = 0
 
         # Set up the right-click popup menu.
         self.popup = wx.Menu()
@@ -30,7 +29,7 @@ class MessageTree(wx.TreeCtrl):
         self.move_above = wx.MenuItem(self.dnd_popup, 5, "Insert Above", "Insert item above", wx.ITEM_NORMAL)
         self.move_below = wx.MenuItem(self.dnd_popup, 6, "Insert Below", "Insert item below", wx.ITEM_NORMAL)
         self.add_child = wx.MenuItem(self.dnd_popup, 7, "Add as child", "Add item as child", wx.ITEM_NORMAL)
-        self.move_cancel = wx.MenuItem(self.dnd_popup, 5, "Cancel", "Cancel move", wx.ITEM_NORMAL)
+        self.move_cancel = wx.MenuItem(self.dnd_popup, 8, "Cancel", "Cancel move", wx.ITEM_NORMAL)
         self.dnd_popup.AppendItem(self.move_above)
         self.dnd_popup.AppendItem(self.move_below)
         self.dnd_popup.AppendItem(self.add_child)
@@ -77,6 +76,25 @@ class MessageTree(wx.TreeCtrl):
                                                 (wx.ACCEL_CTRL, ord('e'), self.key_endchild)
                                                 ])
         self.SetAcceleratorTable(self.accel_tbl)
+        
+    def GetIndex(self, wxTreeItem):
+        """Get index of wxTreeItem"""
+        message_root = self.GetRootItem()
+        tag, cookie = self.GetFirstChild(message_root)
+        if tag == wxTreeItem: return 0
+        return self.GetIndexRecursive(wxTreeItem, message_root, cookie, 0)[0]
+			
+    def GetIndexRecursive(self, wxTreeItem, root, cookie, index):
+        """Recursive subfunction of GetIndex"""
+        tag, cookie = self.GetNextChild(root, cookie)
+        while tag.IsOk():
+            index += 1
+            if tag == wxTreeItem: return (index, True)
+            if self.ItemHasChildren(tag):
+                index, found = self.GetIndexRecursive(wxTreeItem, root, cookie, index)
+                if found: return (index, True)
+            tag, cookie = self.GetNextChild(root, cookie)
+        return (-1, False)
 		
 # ---- Events ------------------------------------------------------- #
 		
@@ -143,6 +161,8 @@ class MessageTree(wx.TreeCtrl):
         When the event occurs, the data is moved to its new location."""
         if not event.GetItem().IsOk():
             return
+        if event.GetItem() == self.GetRootItem():
+            return
         try:
             old = self.dragItem
         except:
@@ -154,7 +174,7 @@ class MessageTree(wx.TreeCtrl):
         text = self.GetItemText(old)
         self.Delete(old)
         if self.dnd_popup_selected == 'above':
-            self.InsertItemAbove(parent, new, text)
+            self.InsertItemBefore(parent, self.GetIndex(new), text)
         elif self.dnd_popup_selected == 'below':
             self.InsertItem(parent, new, text)
         elif self.dnd_popup_selected == 'child':
@@ -292,12 +312,15 @@ class MessageTree(wx.TreeCtrl):
 	
     def doShowTagHelp(self, event):
         #get selected marketdata tree item
-        disabled = ['Message']
+        disabled = ['Message', "                    ", ""]
         selected_tag_text = self.GetItemText(event.GetItem())
         if selected_tag_text in disabled: return
         tag_text = selected_tag_text.split("=")[0]
         desc_text = fixfixer_xml.find_tag_desc(tag_text)
         event.SetToolTip(desc_text)
+				
+		
+        
 		
 # --- End MessageTree class ----------------------------------------- #
 		

@@ -1,3 +1,5 @@
+"""XML-related functions for Fix Fixer"""
+
 import xml.etree.ElementTree
 import os
 
@@ -12,4 +14,4 @@ def find_tag_desc(find_tag):
         if tag_text.text == find_tag:
             return str(desc_text.text)
     #nothing found
-    return "Not found"
+    return "Tag [%s] could not be found." % find_tag

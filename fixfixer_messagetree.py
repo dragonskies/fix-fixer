@@ -6,17 +6,24 @@ import fixfixer_xml
 class MessageTree(wx.TreeCtrl):
     """An extended wx.TreeCtrl with added functionality."""
     def __init__(self, window, tID, ActionHistory):
-        wx.TreeCtrl.__init__(self, window, tID, style=wx.TR_HAS_BUTTONS|wx.TR_NO_LINES|wx.TR_DEFAULT_STYLE|wx.SUNKEN_BORDER|wx.TR_EDIT_LABELS|wx.TR_MULTIPLE)
+        wx.TreeCtrl.__init__(self, window, tID, style=wx.TR_HAS_BUTTONS|
+                             wx.TR_NO_LINES|wx.TR_DEFAULT_STYLE|
+                             wx.SUNKEN_BORDER|wx.TR_EDIT_LABELS|wx.TR_MULTIPLE)
 
         self.ActionHistory = ActionHistory
 
         # Set up the right-click popup menu.
         self.popup = wx.Menu()
-        self.popup_copy = wx.MenuItem(self.popup, 0, "&Copy\tCtrl-C", "Copy item", wx.ITEM_NORMAL)
-        self.popup_paste =wx.MenuItem(self.popup, 1, "&Paste\tCtrl-V", "Replace item", wx.ITEM_NORMAL)
-        self.popup_delete = wx.MenuItem(self.popup, 2, "&Delete\tDelete", "Delete item", wx.ITEM_NORMAL)
-        self.popup_insert = wx.MenuItem(self.popup, 3, "Insert", "Insert new item", wx.ITEM_NORMAL)
-        self.popup_edit = wx.MenuItem(self.popup, 4, "Edit", "Edit item", wx.ITEM_NORMAL)
+        self.popup_copy = wx.MenuItem(self.popup, 0, "&Copy\tCtrl-C", 
+                                                "Copy item", wx.ITEM_NORMAL)
+        self.popup_paste =wx.MenuItem(self.popup, 1, "&Paste\tCtrl-V", 
+                                                "Replace item", wx.ITEM_NORMAL)
+        self.popup_delete = wx.MenuItem(self.popup, 2, "&Delete\tDelete", 
+                                                "Delete item", wx.ITEM_NORMAL)
+        self.popup_insert = wx.MenuItem(self.popup, 3, "Insert", 
+                                                "Insert item", wx.ITEM_NORMAL)
+        self.popup_edit = wx.MenuItem(self.popup, 4, "Edit", 
+                                                "Edit item", wx.ITEM_NORMAL)
         self.popup.AppendItem(self.popup_edit)
         self.popup.AppendItem(self.popup_copy)
         self.popup.AppendItem(self.popup_paste)
@@ -26,10 +33,14 @@ class MessageTree(wx.TreeCtrl):
         
         # Drag'n'Drop Popup
         self.dnd_popup = wx.Menu()
-        self.move_above = wx.MenuItem(self.dnd_popup, 5, "Insert Above", "Insert item above", wx.ITEM_NORMAL)
-        self.move_below = wx.MenuItem(self.dnd_popup, 6, "Insert Below", "Insert item below", wx.ITEM_NORMAL)
-        self.add_child = wx.MenuItem(self.dnd_popup, 7, "Add as child", "Add item as child", wx.ITEM_NORMAL)
-        self.move_cancel = wx.MenuItem(self.dnd_popup, 8, "Cancel", "Cancel move", wx.ITEM_NORMAL)
+        self.move_above = wx.MenuItem(self.dnd_popup, 5, "Insert Above", 
+                                      "Insert item above", wx.ITEM_NORMAL)
+        self.move_below = wx.MenuItem(self.dnd_popup, 6, "Insert Below", 
+                                      "Insert item below", wx.ITEM_NORMAL)
+        self.add_child = wx.MenuItem(self.dnd_popup, 7, "Add as child", 
+                                      "Add item as child", wx.ITEM_NORMAL)
+        self.move_cancel = wx.MenuItem(self.dnd_popup, 8, "Cancel", 
+                                      "Cancel move", wx.ITEM_NORMAL)
         self.dnd_popup.AppendItem(self.move_above)
         self.dnd_popup.AppendItem(self.move_below)
         self.dnd_popup.AppendItem(self.add_child)
@@ -57,7 +68,7 @@ class MessageTree(wx.TreeCtrl):
         self.Bind(wx.EVT_TREE_SEL_CHANGING, self.onEndLabelEdit, self)
         self.Bind(wx.EVT_TREE_BEGIN_DRAG, self.onBeginLabelDrag, self)
         self.Bind(wx.EVT_TREE_END_DRAG, self.onEndLabelDrag, self)
-        self.Bind(wx.EVT_TREE_ITEM_GETTOOLTIP, self.doShowTagHelp, self)
+        self.Bind(wx.EVT_TREE_ITEM_GETTOOLTIP, self.onGetToolTip, self)
         self.key_copy = wx.NewId()
         self.key_paste = wx.NewId()
         self.key_child = wx.NewId()
@@ -70,11 +81,12 @@ class MessageTree(wx.TreeCtrl):
         self.Bind(wx.EVT_MENU, self.doEndChild, id=self.key_endchild)
         self.Bind(wx.EVT_KEY_UP, self.onKeyPress)
 
-        self.accel_tbl = wx.AcceleratorTable([(wx.ACCEL_CTRL, ord('c'), self.key_copy),
-                                                (wx.ACCEL_CTRL, ord('v'), self.key_paste),
-                                                (wx.ACCEL_CTRL, ord('t'), self.key_child),
-                                                (wx.ACCEL_CTRL, ord('e'), self.key_endchild)
-                                                ])
+        self.accel_tbl = wx.AcceleratorTable(
+                                  [(wx.ACCEL_CTRL, ord('c'), self.key_copy),
+                                   (wx.ACCEL_CTRL, ord('v'), self.key_paste),
+                                   (wx.ACCEL_CTRL, ord('t'), self.key_child),
+                                   (wx.ACCEL_CTRL, ord('e'), self.key_endchild)
+                                  ])
         self.SetAcceleratorTable(self.accel_tbl)
         
     def GetIndex(self, wxTreeItem):
@@ -91,15 +103,27 @@ class MessageTree(wx.TreeCtrl):
             index += 1
             if tag == wxTreeItem: return (index, True)
             if self.ItemHasChildren(tag):
-                index, found = self.GetIndexRecursive(wxTreeItem, root, cookie, index)
+                index, found = self.GetIndexRecursive(wxTreeItem, root, 
+                                                      cookie, index)
                 if found: return (index, True)
             tag, cookie = self.GetNextChild(root, cookie)
         return (-1, False)
+
+    def IsValid(self):
+        """Return True if MessageTree consists of at least one node."""
+        try:
+            message_root = self.GetRootItem()
+            if self.GetItemText(message_root) == 'Message':
+                if self.GetChildrenCount(message_root) > 0: return True
+                return False
+            return False
+        except wx._core.PyAssertionError:
+            return False
 		
 # ---- Events ------------------------------------------------------- #
 		
     def onRClickPopup(self, event):
-        """Event handler for detecting a right click and presenting a popup menu."""
+        """Event handler for  presenting a right-click popup menu."""
         disabled = ['Message']
         if self.GetItemText(self.GetSelections()[0]) in disabled: return
         self.PopupMenu(self.popup, event.GetPoint())
@@ -120,7 +144,8 @@ class MessageTree(wx.TreeCtrl):
         for editing."""
         disabled = ['Message']
         try:
-            self.ActionHistory.EndAdd('message_tree_edit', self.GetItemText(self.labelEditSelected))
+            self.ActionHistory.EndAdd('message_tree_edit', 
+                                      self.GetItemText(self.labelEditSelected))
         except:
             pass
         selected = self.GetSelections()
@@ -128,7 +153,8 @@ class MessageTree(wx.TreeCtrl):
         self.labelEdit_oldlabel = self.GetItemText(selected[0])
         if self.labelEdit_oldlabel in disabled:
             event.Veto()
-        self.ActionHistory.StartAdd('message_tree_edit', [selected[0], self.GetItemText(selected[0])])
+        self.ActionHistory.StartAdd('message_tree_edit', [selected[0], 
+                                    self.GetItemText(selected[0])])
         if self.GetItemText( selected[0] ) == "                    ":
             self.SetItemText( selected[0], "" )
         
@@ -136,11 +162,11 @@ class MessageTree(wx.TreeCtrl):
     def onEndLabelEdit(self, event):
         """Event handler for detecting when a label has finished being edited.
 
-        When the event occurs, check if the label was cleared, and if so, replace
-        with 20 spaces."""
+        When the event occurs, check if the label was cleared, and if so, 
+        replace with 20 spaces."""
         try:
             if self.GetItemText( self.labelEditSelected ) == "":
-                self.SetItemText( self.labelEditSelected, "                    " )
+                self.SetItemText(self.labelEditSelected, "                    ")
         except:
             pass
 			
@@ -182,6 +208,15 @@ class MessageTree(wx.TreeCtrl):
             self.InsertItem(rootItem, idPrevious=new, text=text)
             self.Expand(new)
         self.ActionHistory.EndAdd('message_tree_move', self.get_message())
+
+    def onGetToolTip(self, event):
+        """Event handler for displaying an informative tooltip."""
+        disabled = ['Message', "                    ", ""]
+        selected_tag_text = self.GetItemText(event.GetItem())
+        if selected_tag_text in disabled: return
+        tag_text = selected_tag_text.split("=")[0]
+        desc_text = fixfixer_xml.find_tag_desc(tag_text)
+        event.SetToolTip(desc_text)
 		
     def doCopyChild(self, event):
         """Event handler for copying a child node."""
@@ -279,7 +314,8 @@ class MessageTree(wx.TreeCtrl):
         if self.GetItemText(selected[0]) in disabled: return
         pasteString = pyperclip.paste()
         if len(selected) > 1: print "Only supporting single paste at this point..."
-        self.ActionHistory.Write('message_tree_paste', [selected[0], self.GetItemText(selected[0]), pasteString])
+        self.ActionHistory.Write('message_tree_paste', [selected[0], 
+                                 self.GetItemText(selected[0]), pasteString])
         self.SetItemText(selected[0], pasteString)
 		
     def delete_selected(self):
@@ -301,7 +337,8 @@ class MessageTree(wx.TreeCtrl):
         old_message = self.get_message()
         rootItem = selected[0]
         if len(selected) > 1: print "Only supporting single insert at this point..."
-        self.InsertItem(self.GetItemParent(rootItem), idPrevious=selected[0], text="                    ")
+        self.InsertItem(self.GetItemParent(rootItem), idPrevious=selected[0], 
+                        text="                    ")
         new_message = self.get_message()
         self.ActionHistory.Write('message_tree_insert', [old_message, new_message])
 		
@@ -310,18 +347,6 @@ class MessageTree(wx.TreeCtrl):
         selected = self.GetSelections()
         self.EditLabel(selected[0])
 	
-    def doShowTagHelp(self, event):
-        #get selected marketdata tree item
-        disabled = ['Message', "                    ", ""]
-        selected_tag_text = self.GetItemText(event.GetItem())
-        if selected_tag_text in disabled: return
-        tag_text = selected_tag_text.split("=")[0]
-        desc_text = fixfixer_xml.find_tag_desc(tag_text)
-        event.SetToolTip(desc_text)
-				
-		
-        
-		
 # --- End MessageTree class ----------------------------------------- #
 		
 

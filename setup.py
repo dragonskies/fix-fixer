@@ -23,7 +23,7 @@ def remove_executables():
 
 def update_dependencies():
 	print "\n*** update dependencies ***"
-	dependencies = ['fix-fixer.ico', 'home.png', 'prev.png', 'next.png', 'help.html', 'fix_screenshot.jpg', 'Fields.xml']
+	dependencies = ['fix-fixer.ico', 'home.png', 'prev.png', 'next.png', 'help.html', 'fix_screenshot.jpg', 'Fields.xml', 'msvcp90.dll', 'msvcr90.dll']
 	os.chdir('dist')
 
 	for file in dependencies:

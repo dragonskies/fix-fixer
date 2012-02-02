@@ -64,7 +64,7 @@ if remove_executables() and update_dependencies():
 		windows=[
 			{
 				"script": 'fixfixer_main.py',
-				"icon_resources":[(1, "fix-fixer.ico")]
+				"icon_resources":[(0, "fix-fixer.ico"), (1, "fix-fixer.ico")]
 			}
 		]
 	)

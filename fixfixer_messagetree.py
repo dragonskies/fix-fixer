@@ -193,11 +193,13 @@ class MessageTree(wx.TreeCtrl):
             old = self.dragItem
         except:
             return
-        self.PopupMenu(self.dnd_popup, event.GetPoint())
-        if self.dnd_popup_selected == 'cancel': return
         new = event.GetItem()
         parent = self.GetItemParent(new)
         text = self.GetItemText(old)
+        if parent != self.GetRootItem(): self.move_above.Enable(False)
+        else: self.move_above.Enable(True)
+        self.PopupMenu(self.dnd_popup, event.GetPoint())
+        if self.dnd_popup_selected == 'cancel': return
         self.Delete(old)
         if self.dnd_popup_selected == 'above':
             self.InsertItemBefore(parent, self.GetIndex(new), text)
@@ -302,45 +304,57 @@ class MessageTree(wx.TreeCtrl):
     def copy_selected(self):
         """Copy the text contents of the selected node."""
         disabled = ['Message']
-        selected = self.GetSelections()
-        if self.GetItemText(selected[0]) in disabled: return
-        if len(selected) > 1: print "Only supporting single copy at this point..."
-        pyperclip.copy( str( self.GetItemText( selected[0] ) ) )
+        try:
+            selected = self.GetSelections()
+            if self.GetItemText(selected[0]) in disabled: return
+            if len(selected) > 1: print "Only supporting single copy at this point..."
+            pyperclip.copy( str( self.GetItemText( selected[0] ) ) )
+        except IndexError:
+            pass
 
     def paste_selected(self):
         """Paste the contents of the clipboard into the selected node."""
         disabled = ['Message']
-        selected = self.GetSelections()
-        if self.GetItemText(selected[0]) in disabled: return
-        pasteString = pyperclip.paste()
-        if len(selected) > 1: print "Only supporting single paste at this point..."
-        self.ActionHistory.Write('message_tree_paste', [selected[0], 
-                                 self.GetItemText(selected[0]), pasteString])
-        self.SetItemText(selected[0], pasteString)
+        try:
+            selected = self.GetSelections()
+            if self.GetItemText(selected[0]) in disabled: return
+            pasteString = pyperclip.paste()
+            if len(selected) > 1: print "Only supporting single paste at this point..."
+            self.ActionHistory.Write('message_tree_paste', [selected[0], 
+                                     self.GetItemText(selected[0]), pasteString])
+            self.SetItemText(selected[0], pasteString)
+        except IndexError:
+            pass
 		
     def delete_selected(self):
         """Delete the selected children nodes."""
         disabled = ['Message']
-        selected = self.GetSelections()
-        if self.GetItemText(selected[0]) in disabled: return
-        old_message = self.get_message()
-        for item in selected:
-            self.Delete(item)
-        new_message = self.get_message()
-        self.ActionHistory.Write('message_tree_delete', [old_message, new_message])
+        try:
+            selected = self.GetSelections()
+            if self.GetItemText(selected[0]) in disabled: return
+            old_message = self.get_message()
+            for item in selected:
+                self.Delete(item)
+            new_message = self.get_message()
+            self.ActionHistory.Write('message_tree_delete', [old_message, new_message])
+        except IndexError:
+            pass
 		
     def insert_selected(self):
         """Insert a new child node after the selected node."""
         disabled = ['Message']
-        selected = self.GetSelections()
-        if self.GetItemText(selected[0]) in disabled: return
-        old_message = self.get_message()
-        rootItem = selected[0]
-        if len(selected) > 1: print "Only supporting single insert at this point..."
-        self.InsertItem(self.GetItemParent(rootItem), idPrevious=selected[0], 
-                        text="                    ")
-        new_message = self.get_message()
-        self.ActionHistory.Write('message_tree_insert', [old_message, new_message])
+        try:
+            selected = self.GetSelections()
+            if self.GetItemText(selected[0]) in disabled: return
+            old_message = self.get_message()
+            rootItem = selected[0]
+            if len(selected) > 1: print "Only supporting single insert at this point..."
+            self.InsertItem(self.GetItemParent(rootItem), idPrevious=selected[0], 
+                            text="                    ")
+            new_message = self.get_message()
+            self.ActionHistory.Write('message_tree_insert', [old_message, new_message])
+        except IndexError:
+            pass
 		
     def edit_selected(self):
         """Edit the child node."""

@@ -34,8 +34,8 @@ class Dialog1(wx.Dialog):
               'V - Market data request', 'R - Quote request'],
               id=wxID_DIALOG1CHOICE1, name='choice1', parent=self,
               pos=wx.Point(120, 64), size=wx.Size(130, 21), style=0)
-        self.choice1.SetStringSelection(u'X - Incremental Refresh\nf - Security definition (dynamic)\nd - Security definition\nV - Market data request\nR - Quote request')
-
+        self.choice1.SetSelection(0)
+        
         self.button1 = wx.Button(id=wxID_DIALOG1BUTTON1, label=u'Next',
               name='button1', parent=self, pos=wx.Point(56, 160),
               size=wx.Size(75, 23), style=0)

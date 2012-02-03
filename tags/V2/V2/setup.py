@@ -4,31 +4,6 @@ import os
 import sys
 import shutil
 
-manifest_template = '''
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
-<assemblyIdentity
-version="5.0.0.0"
-processorArchitecture="x86"
-name="%(prog)s"
-type="win32"
-/>
-<description>%(prog)s Program</description>
-<dependency>
-<dependentAssembly>
-<assemblyIdentity
-type="win32"
-name="Microsoft.Windows.Common-Controls"
-version="6.0.0.0"
-processorArchitecture="X86"
-publicKeyToken="6595b64144ccf1df"
-language="*"
-/>
-</dependentAssembly>
-</dependency>
-</assembly>
-'''
-
 def remove_executables():
 	print "\n*** remove old executables ***"
 	success = True
@@ -49,11 +24,6 @@ def remove_executables():
 def update_dependencies():
 	print "\n*** update dependencies ***"
 	dependencies = ['fix-fixer.ico', 'home.png', 'prev.png', 'next.png', 'help.html', 'fix_screenshot.jpg', 'Fields.xml']
-	try:
-		shutil.copyfile('msvcp90.dll', os.path.join('dist', 'msvcp90.dll'))
-		shutil.copyfile('msvcr90.dll', os.path.join('dist', 'msvcr90.dll'))
-	except: 
-		pass
 	dist_resources = os.path.join('dist', 'resources')
 	if not os.path.isdir(dist_resources):
 	    os.chdir('dist')
@@ -104,7 +74,7 @@ if remove_executables() and update_dependencies():
         license = "GPL",
         description = "An easy to use FIX message creator/editor for testing messaging systems.",
         options = {"py2exe":{"dll_excludes":["msvcr71.dll", "msvcp90.dll"],
-               "bundle_files":1,
+#               "bundle_files":1,           # bundle breaks appearance
                "optimize":2,
                "compressed":True,
                "excludes":['_ssl',  # Exclude _ssl
@@ -113,14 +83,11 @@ if remove_executables() and update_dependencies():
 
         zipfile = None,
         author = "Sean Davis, Timothy Davis",
-        copyright = "Timothy Davis 2012",
+#        copyright = "Timothy Davis 2012",  # tag does not work
 		windows=[
 			{
-
 				"script": 'fixfixer_main.py',
 				"icon_resources":[(0, icopath), (1, icopath)],
-#				"other_resources" : [(24, 1,
-#                                        manifest_template % dict(prog="Fix Message Fixer"))],
 			}
 		],
 		data_files=["msvcp90.dll"],

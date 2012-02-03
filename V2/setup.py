@@ -4,6 +4,31 @@ import os
 import sys
 import shutil
 
+manifest_template = '''
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
+<assemblyIdentity
+version="5.0.0.0"
+processorArchitecture="x86"
+name="%(prog)s"
+type="win32"
+/>
+<description>%(prog)s Program</description>
+<dependency>
+<dependentAssembly>
+<assemblyIdentity
+type="win32"
+name="Microsoft.Windows.Common-Controls"
+version="6.0.0.0"
+processorArchitecture="X86"
+publicKeyToken="6595b64144ccf1df"
+language="*"
+/>
+</dependentAssembly>
+</dependency>
+</assembly>
+'''
+
 def remove_executables():
 	print "\n*** remove old executables ***"
 	success = True
@@ -74,12 +99,31 @@ if remove_executables() and update_dependencies():
 	print "\n*** compile binaries ***"
 	icopath = os.path.join('resources', 'fix-fixer.ico')
 	setup(
+        name = "Fix Message Fixer",
+        version = "2.0",
+        license = "GPL",
+        description = "An easy to use FIX message creator/editor for testing messaging systems.",
+        options = {"py2exe":{"dll_excludes":["msvcr71.dll", "msvcp90.dll"],
+               "bundle_files":1,
+               "optimize":2,
+               "compressed":True,
+               "excludes":['_ssl',  # Exclude _ssl
+                        'pyreadline', 'difflib', 'doctest',
+                        'optparse', 'pickle', 'calendar'],}},
+
+        zipfile = None,
+        author = "Sean Davis, Timothy Davis",
+        copyright = "Timothy Davis 2012",
 		windows=[
 			{
+
 				"script": 'fixfixer_main.py',
-				"icon_resources":[(0, icopath), (1, icopath)]
+				"icon_resources":[(0, icopath), (1, icopath)],
+#				"other_resources" : [(24, 1,
+#                                        manifest_template % dict(prog="Fix Message Fixer"))],
 			}
-		]
+		],
+		data_files=["msvcp90.dll"],
 	)
 
 	post_install()

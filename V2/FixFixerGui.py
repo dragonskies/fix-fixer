@@ -150,6 +150,9 @@ class FixFixerFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.onShowHelp, self.HelpMenu_Help)
         self.Bind(wx.EVT_MENU, self.onShowAbout, self.HelpMenu_About)
 
+        # Splitter Window
+        self.Bind(wx.EVT_SPLITTER_DCLICK, self.onSplitterWindowUnsplit, self.splitterWindow)
+
         # Buttons
         self.Bind(wx.EVT_BUTTON, self.onPushButton_toMessageTree, self.pushButton_toMessageTree)
         self.Bind(wx.EVT_BUTTON, self.onPushButton_toMarketData, self.pushButton_toMarketData)
@@ -238,6 +241,10 @@ class FixFixerFrame(wx.Frame):
     def onShowAbout(self, event):
         """Event handler to show the About Dialog."""
         self.AboutDialog.show()
+
+    def onSplitterWindowUnsplit(self, event):
+        """Event handler to prevent SplitterWindow from unsplitting."""
+        event.Veto()
 
     def onPushButton_toMessageTree(self, event):
         """Event handler for pushing data from MarketData to MessageTree."""

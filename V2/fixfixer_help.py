@@ -37,8 +37,8 @@ class FixFixerHelpFrame(wx.Frame):
         wx.EVT_IDLE( self, self.OnShow )
 
     def __set_properties(self):
-        self.SetTitle("Help - Fix Message fixer")
-        self.SetSize((640, 480))
+        self.SetTitle("Help - Fix Message Fixer")
+        self.SetSize((700, 480))
         self.SetIcon(self.HelpIcon)
         self.SetHome("resources/help.html")
         self.toolbar.Realize()
@@ -48,6 +48,7 @@ class FixFixerHelpFrame(wx.Frame):
         sizer.Add(self.html, 1, wx.EXPAND, 0)
         self.SetSizer(sizer)
         self.Layout()
+        self.Centre()
 
     def __do_bindings(self):
 		self.Bind(wx.EVT_TOOL, self.OnHome, self.button_home)

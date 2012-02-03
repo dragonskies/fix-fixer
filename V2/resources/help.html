@@ -5,51 +5,55 @@
 <h1>Summary</h1>
 <p>Ever need help verifying or creating a FIX protocol message
 for testing? This program is designed to help with that onery task.</p>
-<hl></hl>
+<hl />
 <ol>
-<li><a href="#Introduction">Introduction</a></li>
-<li><a href="#Menu_Layout">Menu layout</a></li>
-<ol>
-<li>File</li>
-<li>Edit</li>
-<li>Help</li>
+    <li><a href="#Introduction">Introduction</a></li>
+    <li><a href="#Menu_Layout">Menu layout</a></li>
+        <ol>
+            <li>File</li>
+            <li>Edit</li>
+            <li>Help</li>
+        </ol>
+    <li><a href="#Paste_Bin">Paste bin</a></li>
+    <li><a href="#Message_Tree">Message tree</a></li>
+    <li><a href="#Other_stuff_to_add">TBD</a></li>
 </ol>
-<li><a href="#Paste_Bin">Paste bin</a></li>
-<li><a href="#Message_Tree">Message tree</a></li>
-<li><a href="#Other_stuff_to_add">TBD</a></li>
-</ol>
+
 <div style="text-align: center;">
 <h3><a name="Introduction"></a>Introduction</h3>
 <div style="text-align: left;">FIX-fixer can take any
 standard FIX protocol message and convert it to an easy to read tree
 format. The tree can then be edited and reformatted back to an pastable
-message for copying into any test<br><img alt="FIX fixer screenshot" src="fix_screenshot.jpg">.</div>
+message for copying into any test.
+<br><img alt="FIX fixer screenshot" src="fix_screenshot.jpg"></div>
+
 <h3><span style="font-weight: bold;"><a name="Menu_Layout"></a>Menu Layout</span></h3>
 <div style="text-align: left;"><span style="font-weight: bold;">File</span>:<br>
 &nbsp;&nbsp;&nbsp; The file menu contains
 three items: <br>
 <ol>
-<li>Load: load a presaved message into the paste bin</li>
-<li>Save: save the current paste bin into a file</li>
-<li>Exit: Launches the space shuttle into orbit&nbsp;</li>
+    <li>Load: load a presaved message into the paste bin</li>
+    <li>Save: save the current paste bin into a file</li>
+    <li>Exit: Launches the space shuttle into orbit&nbsp;</li>
 </ol>
 <span style="font-weight: bold;">Edit:<br>
 <span style="font-weight: bold;"></span></span>&nbsp;&nbsp;&nbsp;
 The edit menu contains the following items:<br>
 <ol>
-<li>Undo: Reverses the last performed action</li>
-<li>Redo: Redo the last undone action</li>
-<li>Clear: clears the paste bin and the message tree</li>
+    <li>Undo: Reverses the last performed action</li>
+    <li>Redo: Redo the last undone action</li>
+    <li>Clear: clears the paste bin and the message tree</li>
 </ol>
 <br>
 <span style="font-weight: bold;">Help:<br>
 <span style="font-weight: bold;">&nbsp;&nbsp;&nbsp;
 </span></span>The help menu contains the following items:<br>
 <ol>
-<li>Help: You're here right? Looking at the help file</li>
-<li>About: What's it all about, developers, version, writers</li>
+    <li>Help: You're here right? Looking at the help file</li>
+    <li>About: What's it all about, developers, version, writers</li>
 </ol>
 <br>
+
 <h3 style="text-align: center;"><a name="Paste_Bin"></a>Paste
 Bin</h3>
 &nbsp;&nbsp;&nbsp; The paste bin is the text box on the
@@ -59,19 +63,28 @@ the program. It can also be used to edit the message.<br>
 pasting still works as expected, copying the SOH characters into the 
 clipboard.<br>
 <br>
-<h3 style="text-align: center;"><a name="Message_Tree"></a>Message
-Tree</h3>&nbsp;&nbsp;&nbsp;
+
+<h3 style="text-align: center;"><a name="Message_Tree"></a>Message Tree</h3>&nbsp;&nbsp;&nbsp;
 The message tree is the easy to read version of the message data in the
 paste bin. Items can be added or removed by right clicking on the tree.
 The tags can be edited by either selecting the item and selecting again
 (two single clicks) or right clicking and selecting edit. Repeating
-groups can be added by selecting the item and pressing ctrl+t. <br>&nbsp;&nbsp;&nbsp;
-Clicking the sort message button while there is a message in the paste
-bin will cause the current tree to be cleared and the message in the
-bin to sorted into a new tree. Clicking the create message button will
-clear the paste bin and create a new message using the data in the
-message tree. Tags can be dragged and dropped to any location in the
-tree.<br><br><h3 style="text-align: center;"><span style="font-weight: bold;"><a name="Other_stuff_to_add"></a>Other stuff to add</span></h3>List of stuff to be added:<br><ul><li>FIX repository help (help tips, message content, message types)</li><li>Templates</li><li>Wizards</li></ul>
+groups can be added by dragging an item and selecting 'Add as child' or by 
+selecting the item and pressing ctrl+t. <br>&nbsp;&nbsp;&nbsp;
+Clicking the sort message button (right arrow) while there is a message 
+in the paste bin will cause the current tree to be cleared and the message
+in the bin to sorted into a new tree. Clicking the create message button 
+(left arrow) will clear the paste bin and create a new message using the 
+data in the message tree. Tags can be dragged and dropped to any location 
+in the tree.<br><br>
+
+<h3 style="text-align: center;"><span style="font-weight: bold;"><a name="Other_stuff_to_add"></a>Other stuff to add</span></h3>
+List of stuff to be added:<br>
+<ul>
+    <li>FIX repository help (help tips, message content, message types)</li>
+    <li>Templates</li>
+    <li>Wizards</li>
+</ul>
 </div>
 </div>
 </body></html>

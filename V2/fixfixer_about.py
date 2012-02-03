@@ -15,7 +15,7 @@ class AboutFixFixer(wx.AboutDialogInfo):
         self.license = ""
         self.name = "Fix Message fixer"
         self.translators = [""]
-        self.version = "0.1"
+        self.version = "2.0"
         self.website = ("http://code.google.com/p/fix-fixer/", "Fix Fixer Website")
         self.SetProperties()
 

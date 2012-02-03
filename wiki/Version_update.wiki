@@ -1,7 +1,7 @@
 #summary We have decided to set the project to Version 1.0.
 #labels Phase-Support,Featured,Version,updates
 
-= Introduction =
+= Update! Version 1.0 released =
 
 The base features we wanted to implement are now completed.
   * Paste/copy text field
@@ -11,7 +11,7 @@ The base features we wanted to implement are now completed.
   * clearing of both the paste bin and message tree
 
 
-= Details =
+= Next up =
 
 Version 1.0 is completed, see above for list of features
 Version 2.0 will feature:

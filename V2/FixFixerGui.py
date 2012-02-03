@@ -63,7 +63,7 @@ class FixFixerFrame(wx.Frame):
         # Help Menu
         self.HelpMenu = wx.Menu()
         self.HelpMenu_Help = wx.MenuItem(self.HelpMenu, 7, 
-                                "&Help", "Get help with Fix Message Fixer.", wx.ITEM_NORMAL)
+                                "&Help\tF1", "Get help with Fix Message Fixer.", wx.ITEM_NORMAL)
         self.HelpMenu_About = wx.MenuItem(self.HelpMenu, 8, 
                                 "&About", "About Fix Message Fixer.", wx.ITEM_NORMAL)
         self.HelpMenu.AppendItem(self.HelpMenu_Help)
@@ -77,13 +77,13 @@ class FixFixerFrame(wx.Frame):
         self.splitterWindow = wx.SplitterWindow(self, -1, style=wx.SP_3D | wx.SP_BORDER | wx.SP_3DBORDER | wx.SP_3DSASH | wx.SP_NO_XP_THEME | wx.SP_LIVE_UPDATE)
         self.splitterWindow_pane_1 = wx.Panel(self.splitterWindow, -1)
         self.MarketData = fixfixer_marketdata.MarketData(self.splitterWindow_pane_1, 
-                                                         -1, self.ActionHistory)
+                                                         -1, self.ActionHistory, self)
         self.pane_1_sizer_staticbox = wx.StaticBox(self.splitterWindow_pane_1, -1, "Market Data Pastebin")
         self.splitterWindow_pane_2 = wx.Panel(self.splitterWindow, -1)
         self.pushButton_toMessageTree = wx.BitmapButton(self.splitterWindow_pane_2, -1, wx.Bitmap( os.path.join('resources', 'next.png'), wx.BITMAP_TYPE_ANY), style=wx.NO_BORDER)
         self.pushButton_toMarketData = wx.BitmapButton(self.splitterWindow_pane_2, -1, wx.Bitmap( os.path.join('resources', 'prev.png'), wx.BITMAP_TYPE_ANY), style=wx.NO_BORDER)
         self.MessageTree = fixfixer_messagetree.MessageTree(
-                            self.splitterWindow_pane_2, -1, self.ActionHistory)
+                            self.splitterWindow_pane_2, -1, self.ActionHistory, self)
         self.messageTree_sizer_staticbox = wx.StaticBox(self.splitterWindow_pane_2, -1, "Fix Message Tree")
 
         self.__set_properties()
@@ -171,6 +171,7 @@ class FixFixerFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.onExit, id=self.key_quit)
         self.Bind(wx.EVT_MENU, self.onUndo, id=self.key_undo)
         self.Bind(wx.EVT_MENU, self.onRedo, id=self.key_redo)
+        self.Bind(wx.EVT_KEY_UP, self.onKeyPress)
         self.accel_tbl = wx.AcceleratorTable(
                                     [(wx.ACCEL_CTRL, ord('o'), self.key_load),
                                      (wx.ACCEL_CTRL, ord('s'), self.key_save),
@@ -181,6 +182,13 @@ class FixFixerFrame(wx.Frame):
         self.SetAcceleratorTable(self.accel_tbl)
 
 # ----- Events --------------------------------------------------------------- #
+
+    def onKeyPress(self, event):
+        """Event handler for detecting special key presses."""
+        keycode = event.GetKeyCode()
+        if keycode == wx.WXK_F1:
+            self.onShowHelp(event)
+        event.Skip()
 
     def onLoadMessage(self, event):
         """Load message from .TXT file."""

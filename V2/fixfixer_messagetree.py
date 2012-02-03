@@ -5,11 +5,12 @@ import fixfixer_xml
 
 class MessageTree(wx.TreeCtrl):
     """An extended wx.TreeCtrl with added functionality."""
-    def __init__(self, window, tID, ActionHistory):
+    def __init__(self, window, tID, ActionHistory, parent):
         wx.TreeCtrl.__init__(self, window, tID, style=wx.TR_HAS_BUTTONS|
                              wx.TR_NO_LINES|wx.TR_DEFAULT_STYLE|
                              wx.SUNKEN_BORDER|wx.TR_EDIT_LABELS|wx.TR_MULTIPLE)
 
+        self.parent = parent
         self.ActionHistory = ActionHistory
 
         # Set up the right-click popup menu.
@@ -135,6 +136,8 @@ class MessageTree(wx.TreeCtrl):
             self.doDeleteChild(event)
         if keycode == wx.WXK_TAB:
             self.doCreateChild(self, event)
+        if keycode == wx.WXK_F1:
+            self.parent.onShowHelp(event)
         event.Skip()
         
     def onBeginLabelEdit(self, event):

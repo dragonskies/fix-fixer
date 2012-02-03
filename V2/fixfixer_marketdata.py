@@ -3,10 +3,11 @@ import pyperclip
 
 class MarketData(wx.TextCtrl):
     """An extended wx.TextCtrl with added functionality."""
-    def __init__(self, window, tID, ActionHistory):
+    def __init__(self, window, tID, ActionHistory, parent):
         wx.TextCtrl.__init__(self, window, tID, "", style=wx.TE_PROCESS_ENTER|
                                    wx.TE_MULTILINE|wx.TE_RICH|wx.TE_LINEWRAP)
 
+        self.parent = parent
         self.ActionHistory = ActionHistory
         self.CurrentString = ""
 
@@ -14,7 +15,14 @@ class MarketData(wx.TextCtrl):
         self.Bind(wx.EVT_TEXT_CUT, self.doCut)
         self.Bind(wx.EVT_TEXT_COPY, self.doCopy)
         self.Bind(wx.EVT_TEXT_PASTE, self.doPaste)
+        self.Bind(wx.EVT_KEY_UP, self.onKeyPress)
 
+    def onKeyPress(self, event):
+        """Event handler for detecting special key presses."""
+        keycode = event.GetKeyCode()
+        if keycode == wx.WXK_F1:
+            self.parent.onShowHelp(event)
+        event.Skip()
 
     def onSetText(self, event):
         """Event handler for when the text is modified."""

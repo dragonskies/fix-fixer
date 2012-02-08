@@ -77,8 +77,13 @@ class MarketData(wx.TextCtrl):
 
     def SetMessage(self, message):
         """Update the MarketData message."""
-        if "\x01" in message: message = trim_SOH(message)
-        message = message.replace('\x01', '|')
+        if "\x01" in message: 
+            message = trim_SOH(message)
+            message = message.replace('\x01', '|')
+        elif "^" in message:
+            message = message.replace('^', '\x01')
+            message = trim_SOH(message)
+            message = message.replace('\x01', '|')
         self.SetValue(message)
 
     def GetMessage(self):

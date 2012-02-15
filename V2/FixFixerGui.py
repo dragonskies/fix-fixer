@@ -13,6 +13,7 @@ import fixfixer_marketdata
 import fixfixer_about
 import fixfixer_messagetree
 import fixfixer_help
+import fixfixer_customtemplate
 
 # begin wxGlade: extracode
 # end wxGlade
@@ -54,9 +55,11 @@ class FixFixerFrame(wx.Frame):
         self.EditMenu_Redo.Enable(False)
         self.EditMenu_Clear = wx.MenuItem(self.EditMenu, 6, 
                                 "&Clear", "Clear the Market Data and Message Tree.", wx.ITEM_NORMAL)
+        self.EditMenu_Preferences = wx.MenuItem(self.EditMenu, 9, "&Preferences\tCtrl-P", "Change program settings", wx.ITEM_NORMAL)
         self.EditMenu.AppendItem(self.EditMenu_Undo)
         self.EditMenu.AppendItem(self.EditMenu_Redo)
         self.EditMenu.AppendSeparator()
+        self.EditMenu.AppendItem(self.EditMenu_Preferences)
         self.EditMenu.AppendItem(self.EditMenu_Clear)
         self.menubar.Append(self.EditMenu, "Edit")
 
@@ -144,6 +147,7 @@ class FixFixerFrame(wx.Frame):
         # Edit Menu
         self.Bind(wx.EVT_MENU, self.onUndo, self.EditMenu_Undo)
         self.Bind(wx.EVT_MENU, self.onRedo, self.EditMenu_Redo)
+        self.Bind(wx.EVT_MENU, self.onPreferences, self.EditMenu_Preferences)
         self.Bind(wx.EVT_MENU, self.onClear, self.EditMenu_Clear)
 
         # Help Menu
@@ -265,6 +269,13 @@ class FixFixerFrame(wx.Frame):
         MessageTreeText = self.MessageTree.GetMessage()
         self.MarketData.SetMessage(MessageTreeText)
         self.MarketData.SetFocus()
+
+    def onPreferences(self, event):
+        personal_tags = fixfixer_customtemplate.create(self)
+        response = personal_tags.ShowModal()
+        if response == wx.ID_OK:
+            print "save tags"
+        personal_tags.Destroy()
 
 # ---------------------------------------------------------------------------- #
 

@@ -15,6 +15,10 @@ import fixfixer_messagetree
 import fixfixer_help
 import fixfixer_customtemplate
 import FixFixerProperties
+import fixfixer_template1
+import fixfixer_template2
+import fixfixer_template3
+import fixfixer_template4
 
 
 # begin wxGlade: extracode
@@ -42,10 +46,12 @@ class FixFixerFrame(wx.Frame):
                                 "&Load\tCtrl-O", "Load a Market Data message from a file.", wx.ITEM_NORMAL)
         self.FileMenu_Save = wx.MenuItem(self.FileMenu, 2, 
                                 "&Save\tCtrl-S", "Save Market Data message to a file.", wx.ITEM_NORMAL)
+        self.FileMenu_Wizard = wx.MenuItem(self.FileMenu, 10, "Message &Wizard", "Create a FIX message easily", wx.ITEM_NORMAL)
         self.FileMenu_Exit = wx.MenuItem(self.FileMenu, wx.ID_EXIT, 
                                 "&Exit\tCtrl-Q", "Exit the application.", wx.ITEM_NORMAL)
         self.FileMenu.AppendItem(self.FileMenu_Load)
         self.FileMenu.AppendItem(self.FileMenu_Save)
+        self.FileMenu.AppendItem(self.FileMenu_Wizard)
         self.FileMenu.AppendSeparator()
         self.FileMenu.AppendItem(self.FileMenu_Exit)
         self.menubar.Append(self.FileMenu, "File")
@@ -151,6 +157,7 @@ class FixFixerFrame(wx.Frame):
         # File Menu
         self.Bind(wx.EVT_MENU, self.onLoadMessage, self.FileMenu_Load)
         self.Bind(wx.EVT_MENU, self.onSaveMessage, self.FileMenu_Save)
+        self.Bind(wx.EVT_MENU, self.onDoWizard, self.FileMenu_Wizard)
         self.Bind(wx.EVT_MENU, self.onExit, self.FileMenu_Exit)
 
         # Edit Menu
@@ -292,6 +299,16 @@ class FixFixerFrame(wx.Frame):
                 self.default_tags.SetProperty(tag_number,tag_value)
         personal_tags.Destroy()
 
+    def onDoWizard(self, event):
+        wizard_dialog1 = fixfixer_template1.create(self)
+        wizard_dialog2 = fixfixer_template2.create(self)
+        wizard_dialog3 = fixfixer_template3.create(self)
+        wizard_dialog4 = fixfixer_template4.create(self)
+        wizard_dialog1.ShowModal()
+        wizard_dialog2.ShowModal()
+        wizard_dialog3.ShowModal()
+        wizard_dialog4.ShowModal()
+        
 # ---------------------------------------------------------------------------- #
 
 # ----- Functions ------------------------------------------------------------ #

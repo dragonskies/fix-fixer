@@ -56,9 +56,9 @@ def update_dependencies():
 		pass
 	dist_resources = os.path.join('dist', 'resources')
 	if not os.path.isdir(dist_resources):
-	    os.chdir('dist')
-	    os.mkdir('resources')
-	    os.chdir('..')
+		os.chdir('dist')
+		os.mkdir('resources')
+		os.chdir('..')
 	os.chdir(dist_resources)
 
 	for file in dependencies:
@@ -99,21 +99,21 @@ if remove_executables() and update_dependencies():
 	print "\n*** compile binaries ***"
 	icopath = os.path.join('resources', 'fix-fixer.ico')
 	setup(
-        name = "Fix Message Fixer",
-        version = "2.0",
-        license = "GPL",
-        description = "An easy to use FIX message creator/editor for testing messaging systems.",
-        options = {"py2exe":{"dll_excludes":["msvcr71.dll", "msvcp90.dll"],
-               "bundle_files":1,
-               "optimize":2,
-               "compressed":True,
-               "excludes":['_ssl',  # Exclude _ssl
-                        'pyreadline', 'difflib', 'doctest',
-                        'optparse', 'pickle', 'calendar'],}},
+		name = "Fix Message Fixer",
+		version = "2.0",
+		license = "GPL",
+		description = "An easy to use FIX message creator/editor for testing messaging systems.",
+		options = {"py2exe":{"dll_excludes":["msvcr71.dll", "msvcp90.dll"],
+			"bundle_files":1,
+			"optimize":2,
+			"compressed":True,
+			"excludes":['_ssl',  # Exclude _ssl
+						'pyreadline', 'difflib', 'doctest',
+						'optparse', 'pickle', 'calendar'],}},
 
-        zipfile = None,
-        author = "Sean Davis, Timothy Davis",
-        copyright = "Timothy Davis 2012",
+		zipfile = None,
+		author = "Sean Davis, Timothy Davis",
+		copyright = "Timothy Davis 2012",
 		windows=[
 			{
 

@@ -42,7 +42,7 @@ class Dialog1(wx.Dialog):
               label=u'Number of Legs', name='staticText1', parent=self,
               pos=wx.Point(72, 16), size=wx.Size(75, 13), style=0)
 
-        self.button1 = wx.Button(id=wxID_DIALOG1BUTTON1, label=u'Ok',
+        self.button1 = wx.Button(id=wx.ID_OK, label=u'Ok',
               name='button1', parent=self, pos=wx.Point(24, 256),
               size=wx.Size(75, 23), style=0)
         self.button1.SetDefault()
@@ -50,7 +50,7 @@ class Dialog1(wx.Dialog):
             id=wxID_DIALOG1BUTTON1)
 
 
-        self.button2 = wx.Button(id=wxID_DIALOG1BUTTON2, label=u'Next',
+        self.button2 = wx.Button(id=wxID_DIALOG1BUTTON2, label=u'Back',
               name='button2', parent=self, pos=wx.Point(168, 256),
               size=wx.Size(75, 23), style=0)
         self.button2.SetAutoLayout(True)
@@ -58,7 +58,7 @@ class Dialog1(wx.Dialog):
         self.button2.Bind(wx.EVT_BUTTON, self.OnButton2Button,
             id=wxID_DIALOG1BUTTON1)
 
-        self.button3 = wx.Button(id=wxID_DIALOG1BUTTON3, label=u'Cancel',
+        self.button3 = wx.Button(id=wx.ID_CANCEL, label=u'Cancel',
               name='button3', parent=self, pos=wx.Point(312, 256),
               size=wx.Size(75, 23), style=0)
         self.button3.Bind(wx.EVT_BUTTON, self.OnButton3Button,

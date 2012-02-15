@@ -36,14 +36,14 @@ class Dialog1(wx.Dialog):
               pos=wx.Point(120, 64), size=wx.Size(130, 21), style=0)
         self.choice1.SetSelection(0)
         
-        self.button1 = wx.Button(id=wxID_DIALOG1BUTTON1, label=u'Next',
+        self.button1 = wx.Button(id=wx.ID_OK, label=u'Next',
               name='button1', parent=self, pos=wx.Point(56, 160),
               size=wx.Size(75, 23), style=0)
         self.button1.SetDefault()
         self.button1.Bind(wx.EVT_BUTTON, self.OnButton1Button,
               id=wxID_DIALOG1BUTTON1)
 
-        self.button2 = wx.Button(id=wxID_DIALOG1BUTTON2, label=u'Cancel',
+        self.button2 = wx.Button(id=wx.ID_CANCEL, label=u'Cancel',
               name='button2', parent=self, pos=wx.Point(168, 160),
               size=wx.Size(75, 23), style=0)
         self.button2.Bind(wx.EVT_BUTTON, self.OnButton2Button,

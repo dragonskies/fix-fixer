@@ -5,9 +5,6 @@ import wx
 import wx.lib.intctrl
 import wx.lib.masked.numctrl
 from wx.lib.anchors import LayoutAnchors
-import fixfixer_templatepage
-from copy import deepcopy
-import fixfixer_mdpage
 
 def create(parent):
 	return Body1(parent)
@@ -42,7 +39,7 @@ class Body1(wx.Dialog):
 		self.spinCtrl1.Bind(wx.EVT_SPINCTRL, self.OnSpinCtrl1Spinctrl,
 			id=wxID_BODY1SPINCTRL1)
 
-		self.button1 = wx.Button(id=wxID_BODY1BUTTON1, label=u'Next',
+		self.button1 = wx.Button(id=wx.ID_OK, label=u'Next',
 			name='button1', parent=self, pos=wx.Point(8, 320),
 			size=wx.Size(75, 23), style=0)
 		self.button1.SetDefault()
@@ -51,7 +48,7 @@ class Body1(wx.Dialog):
 		self.button1.Bind(wx.EVT_BUTTON, self.OnButton1Button,
 			id=wxID_BODY1BUTTON1)
 
-		self.button2 = wx.Button(id=wxID_BODY1BUTTON2, label=u'Cancel',
+		self.button2 = wx.Button(id=wx.ID_CANCEL, label=u'Cancel',
 			name='button2', parent=self, pos=wx.Point(304, 320),
 			size=wx.Size(72, 24), style=0)
 		self.button2.SetConstraints(LayoutAnchors(self.button2, True, True,
@@ -144,7 +141,7 @@ class Panel1(wx.Panel):
 			size=wx.Size(130, 21), style=0)
 		self.choice1.SetLabel(u'')
 
-		self.choice2 = wx.Choice(choices=['Bid', 'Ask', 'Trade', 'Empy Book'],
+		self.choice2 = wx.Choice(choices=['Bid', 'Ask', 'Trade', 'Empty Book'],
 			id=wxID_PANEL1CHOICE2, name='choice2',
 			parent=self.scrolledWindow1, pos=wx.Point(80, 40),
 			size=wx.Size(136, 21), style=0)

@@ -222,6 +222,10 @@ class MessageTree(wx.TreeCtrl):
 		tag_text = selected_tag_text.split("=")[0]
 		desc_text = fixfixer_xml.find_tag_desc(tag_text)
 		event.SetToolTip(desc_text)
+
+	def doCutChild(self, event):
+	    self.copy_selected()
+	    self.delete_selected()
 		
 	def doCopyChild(self, event):
 		"""Event handler for copying a child node."""

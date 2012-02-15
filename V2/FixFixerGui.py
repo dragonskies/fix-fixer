@@ -224,9 +224,9 @@ class FixFixerFrame(wx.Frame):
         self.Bind(wx.EVT_TOOL, self.onSaveMessage, self.button_save)
         self.Bind(wx.EVT_TOOL, self.onUndo, self.button_undo)
         self.Bind(wx.EVT_TOOL, self.onRedo, self.button_redo)
-#        self.Bind(wx.EVT_TOOL, self.onCut, self.button_cut)
-#        self.Bind(wx.EVT_TOOL, self.onCopy, self.button_copy)
-#        self.Bind(wx.EVT_TOOL, self.onPaste, self.button_paste)
+        self.Bind(wx.EVT_TOOL, self.onCut, self.button_cut)
+        self.Bind(wx.EVT_TOOL, self.onCopy, self.button_copy)
+        self.Bind(wx.EVT_TOOL, self.onPaste, self.button_paste)
         self.Bind(wx.EVT_TOOL, self.onClear, self.button_clear)
         self.Bind(wx.EVT_TOOL, self.onPreferences, self.button_preferences)
 
@@ -264,11 +264,7 @@ class FixFixerFrame(wx.Frame):
 # ----- Events --------------------------------------------------------------- #
 
     def onNew(self, event):
-        try:
-            os.system('python fixfixer_help.py')
-            print 'a'
-        except:
-            print 'b'
+        wx.MessageBox("'New Window' has not yet been implemented.")
 
     def onKeyPress(self, event):
         """Event handler for detecting special key presses."""
@@ -375,6 +371,27 @@ class FixFixerFrame(wx.Frame):
         wizard_dialog2.ShowModal()
         wizard_dialog3.ShowModal()
         wizard_dialog4.ShowModal()
+
+    def onCut(self, event):
+        focus = self.FindFocus()
+        try:
+            focus.doCut(event)
+        except AttributeError:
+            focus.doCutChild(event)
+
+    def onCopy(self, event):
+        focus = self.FindFocus()
+        try:
+            focus.doCopy(event)
+        except AttributeError:
+            focus.doCopyChild(event)
+
+    def onPaste(self, event):
+        focus = self.FindFocus()
+        try:
+            focus.doPaste(event)
+        except AttributeError:
+            focus.doPasteChild(event)
         
 # ---------------------------------------------------------------------------- #
 

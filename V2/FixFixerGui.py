@@ -367,10 +367,10 @@ class FixFixerFrame(wx.Frame):
         wizard_dialog2 = fixfixer_template2.create(self)
         wizard_dialog3 = fixfixer_template3.create(self)
         wizard_dialog4 = fixfixer_template4.create(self)
-        wizard_dialog1.ShowModal()
-        wizard_dialog2.ShowModal()
-        wizard_dialog3.ShowModal()
-        wizard_dialog4.ShowModal()
+        if wizard_dialog1.ShowModal() == 1:
+            if wizard_dialog2.ShowModal() == 1:
+                if wizard_dialog3.ShowModal() == 1:
+                    wizard_dialog4.ShowModal()
 
     def onCut(self, event):
         focus = self.FindFocus()

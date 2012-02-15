@@ -36,10 +36,13 @@ class FixFixerFrame(wx.Frame):
 
         self.AboutDialog = fixfixer_about.AboutFixFixer(self)
         self.ActionHistory = fixfixer_actionhistory.FixActionHistory(self)
+
+        self.undo_enabled = False
+        self.redo_enabled = False
         
         # Menu Bar
         self.menubar = wx.MenuBar()
-        
+
         # File Menu
         self.FileMenu = wx.Menu()
         self.FileMenu_Load = wx.MenuItem(self.FileMenu, 1, 
@@ -86,6 +89,50 @@ class FixFixerFrame(wx.Frame):
         
         self.SetMenuBar(self.menubar)
         # Menu Bar end
+
+        # Tool Bar
+        self.toolbar = wx.ToolBar(self, -1, style=wx.TB_HORIZONTAL | wx.TB_FLAT 
+                                                  | wx.TB_DOCKABLE)
+        self.SetToolBar(self.toolbar)
+
+        self.NewIcon = wx.Bitmap(os.path.join('resources', "new.png"), wx.BITMAP_TYPE_ANY)
+        self.OpenIcon = wx.Bitmap(os.path.join('resources', "open.png"), wx.BITMAP_TYPE_ANY)
+        self.SaveIcon = wx.Bitmap(os.path.join('resources', "save.png"), wx.BITMAP_TYPE_ANY)
+        self.UndoIcon = wx.Bitmap(os.path.join('resources', "undo.png"), wx.BITMAP_TYPE_ANY)
+        self.RedoIcon = wx.Bitmap(os.path.join('resources', "redo.png"), wx.BITMAP_TYPE_ANY)
+        self.CutIcon = wx.Bitmap(os.path.join('resources', "cut.png"), wx.BITMAP_TYPE_ANY)
+        self.CopyIcon = wx.Bitmap(os.path.join('resources', "copy.png"), wx.BITMAP_TYPE_ANY)
+        self.PasteIcon = wx.Bitmap(os.path.join('resources', "paste.png"), wx.BITMAP_TYPE_ANY)
+        self.ClearIcon = wx.Bitmap(os.path.join('resources', "clear.png"), wx.BITMAP_TYPE_ANY)
+        self.PreferencesIcon = wx.Bitmap(os.path.join('resources', "preferences.png"), wx.BITMAP_TYPE_ANY)
+        
+        self.button_new = self.toolbar.AddLabelTool(wx.ID_ANY, "Open New Window", 
+                           self.NewIcon, wx.NullBitmap, wx.ITEM_NORMAL, "Open New Window", "Open New Window")
+        self.button_open = self.toolbar.AddLabelTool(wx.ID_ANY, "Load Message", 
+                           self.OpenIcon, wx.NullBitmap, wx.ITEM_NORMAL, "Load Message", "Load Message")
+        self.button_save = self.toolbar.AddLabelTool(wx.ID_ANY, "Save Message", 
+                           self.SaveIcon, wx.NullBitmap, wx.ITEM_NORMAL, "Save Message", "Save Message")
+        self.toolbar.AddSeparator()
+        self.button_undo = self.toolbar.AddLabelTool(wx.ID_ANY, "Undo", 
+                           self.UndoIcon, wx.NullBitmap, wx.ITEM_NORMAL, "Undo", "Undo")
+        self.button_redo = self.toolbar.AddLabelTool(wx.ID_ANY, "Redo", 
+                           self.RedoIcon, wx.NullBitmap, wx.ITEM_NORMAL, "Redo", "Redo")
+        self.button_undo.Enable(False)
+        self.button_redo.Enable(False)
+        self.toolbar.AddSeparator()
+        self.button_cut = self.toolbar.AddLabelTool(wx.ID_ANY, "Cut", 
+                           self.CutIcon, wx.NullBitmap, wx.ITEM_NORMAL, "Cut", "Cut")
+        self.button_copy = self.toolbar.AddLabelTool(wx.ID_ANY, "Copy", 
+                           self.CopyIcon, wx.NullBitmap, wx.ITEM_NORMAL, "Copy", "Copy")
+        self.button_paste = self.toolbar.AddLabelTool(wx.ID_ANY, "Paste", 
+                           self.PasteIcon, wx.NullBitmap, wx.ITEM_NORMAL, "Paste", "Paste")
+        self.toolbar.AddSeparator()
+        self.button_clear = self.toolbar.AddLabelTool(wx.ID_ANY, "Clear Contents", 
+                           self.ClearIcon, wx.NullBitmap, wx.ITEM_NORMAL, "Clear Contents", "Clear the contents of the Market Data Pastebin and the Message Tree.")
+        self.toolbar.AddSeparator()
+        self.button_preferences = self.toolbar.AddLabelTool(wx.ID_ANY, "Preferences", 
+                           self.PreferencesIcon, wx.NullBitmap, wx.ITEM_NORMAL, "Preferences", "Configure Fix Message Fixer")
+        # Tool Bar end
         
         self.statusbar = self.CreateStatusBar(1, wx.ST_SIZEGRIP)
         self.splitterWindow = wx.SplitterWindow(self, -1, style=wx.SP_3D | wx.SP_BORDER | wx.SP_3DBORDER | wx.SP_3DSASH | wx.SP_NO_XP_THEME | wx.SP_LIVE_UPDATE)
@@ -127,6 +174,7 @@ class FixFixerFrame(wx.Frame):
         self.pushButton_toMessageTree.SetSize(self.pushButton_toMessageTree.GetBestSize())
         self.pushButton_toMarketData.SetToolTipString("Write to Market Data")
         self.pushButton_toMarketData.SetSize(self.pushButton_toMarketData.GetBestSize())
+        self.toolbar.Realize()
         # end wxGlade
 
     def __do_layout(self):
@@ -170,6 +218,18 @@ class FixFixerFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.onShowHelp, self.HelpMenu_Help)
         self.Bind(wx.EVT_MENU, self.onShowAbout, self.HelpMenu_About)
 
+        # Toolbar
+        self.Bind(wx.EVT_TOOL, self.onNew, self.button_new)
+        self.Bind(wx.EVT_TOOL, self.onLoadMessage, self.button_open)
+        self.Bind(wx.EVT_TOOL, self.onSaveMessage, self.button_save)
+        self.Bind(wx.EVT_TOOL, self.onUndo, self.button_undo)
+        self.Bind(wx.EVT_TOOL, self.onRedo, self.button_redo)
+#        self.Bind(wx.EVT_TOOL, self.onCut, self.button_cut)
+#        self.Bind(wx.EVT_TOOL, self.onCopy, self.button_copy)
+#        self.Bind(wx.EVT_TOOL, self.onPaste, self.button_paste)
+        self.Bind(wx.EVT_TOOL, self.onClear, self.button_clear)
+        self.Bind(wx.EVT_TOOL, self.onPreferences, self.button_preferences)
+
         # Splitter Window
         self.Bind(wx.EVT_SPLITTER_DCLICK, self.onSplitterWindowUnsplit, self.splitterWindow)
 
@@ -202,6 +262,13 @@ class FixFixerFrame(wx.Frame):
         self.SetAcceleratorTable(self.accel_tbl)
 
 # ----- Events --------------------------------------------------------------- #
+
+    def onNew(self, event):
+        try:
+            os.system('python fixfixer_help.py')
+            print 'a'
+        except:
+            print 'b'
 
     def onKeyPress(self, event):
         """Event handler for detecting special key presses."""
@@ -312,6 +379,20 @@ class FixFixerFrame(wx.Frame):
 # ---------------------------------------------------------------------------- #
 
 # ----- Functions ------------------------------------------------------------ #
+
+    def EnableUndo(self, enabled):
+        if self.undo_enabled != enabled:
+            self.undo_enabled = enabled
+            self.EditMenu_Undo.Enable(enabled)
+            self.button_undo.Enable(enabled)
+            self.toolbar.Realize()
+
+    def EnableRedo(self, enabled):
+        if self.redo_enabled != enabled:
+            self.redo_enabled = enabled
+            self.EditMenu_Redo.Enable(enabled)
+            self.button_redo.Enable(enabled)
+            self.toolbar.Realize()
 
     def SetStatusbar(self, msg, timeout=0):
         """Set the statusbar text to 'msg' with an optional timeout (in seconds)."""

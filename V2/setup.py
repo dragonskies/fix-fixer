@@ -4,31 +4,6 @@ import os
 import sys
 import shutil
 
-manifest_template = '''
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
-<assemblyIdentity
-version="5.0.0.0"
-processorArchitecture="x86"
-name="%(prog)s"
-type="win32"
-/>
-<description>%(prog)s Program</description>
-<dependency>
-<dependentAssembly>
-<assemblyIdentity
-type="win32"
-name="Microsoft.Windows.Common-Controls"
-version="6.0.0.0"
-processorArchitecture="X86"
-publicKeyToken="6595b64144ccf1df"
-language="*"
-/>
-</dependentAssembly>
-</dependency>
-</assembly>
-'''
-
 def remove_executables():
 	print "\n*** remove old executables ***"
 	success = True
@@ -48,7 +23,7 @@ def remove_executables():
 
 def update_dependencies():
 	print "\n*** update dependencies ***"
-	dependencies = ['fix-fixer.ico', 'home.png', 'prev.png', 'next.png', 'help.html', 'fix_screenshot.jpg', 'Fields.xml']
+	dependencies = ['fix-fixer.ico', 'clear.png', 'copy.png', 'cut.png', 'home.png', 'prev.png', 'new.png', 'next.png', 'open.png', 'paste.png', 'preferences.png', 'redo.png', 'save.png', 'undo.png', 'help.html', 'fix_screenshot.jpg', 'Fields.xml']
 	try:
 		shutil.copyfile('msvcp90.dll', os.path.join('dist', 'msvcp90.dll'))
 		shutil.copyfile('msvcr90.dll', os.path.join('dist', 'msvcr90.dll'))
@@ -108,7 +83,7 @@ if remove_executables() and update_dependencies():
 			"optimize":2,
 			"compressed":True,
 			"excludes":['_ssl',  # Exclude _ssl
-						'pyreadline', 'difflib', 'doctest',
+						'pyreadline', 'doctest',
 						'optparse', 'pickle', 'calendar'],}},
 
 		zipfile = None,

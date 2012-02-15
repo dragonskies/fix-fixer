@@ -94,10 +94,12 @@ class FixActionHistory():
             action = self.UndoHistory.pop()
             action.UndoAction()
             self.RedoHistory.append(action)
-            self.parent.EditMenu_Redo.Enable(True)
+            self.parent.EnableRedo(True)
+            
         except:
             pass
-        if len(self.UndoHistory) == 0: self.parent.EditMenu_Undo.Enable(False)
+        if len(self.UndoHistory) == 0: 
+            self.parent.EnableUndo(False)
 
     def Redo(self):
         """When Redo() is called, perform the action and append it to Undo, 
@@ -106,10 +108,11 @@ class FixActionHistory():
             action = self.RedoHistory.pop()
             action.RedoAction()
             self.UndoHistory.append(action)
-            self.parent.EditMenu_Undo.Enable(True)
+            self.parent.EnableUndo(True)
         except:
             pass
-        if len(self.RedoHistory) == 0: self.parent.EditMenu_Redo.Enable(False)
+        if len(self.RedoHistory) == 0: 
+            self.parent.EnableRedo(False)
 
     def GetUndoHistory(self):
         """Return the Undo history."""
@@ -125,16 +128,16 @@ class FixActionHistory():
         self.RedoHistory = []
         self.StartAdd_name = None
         self.StartAdd_data = None
-        self.parent.EditMenu_Undo.Enable(False)
-        self.parent.EditMenu_Redo.Enable(False)
+        self.parent.EnableUndo(False)
+        self.parent.EnableRedo(False)
 
     def Write(self, name, data):
         """Add an item to the Undo history, clearing the Redo history."""
         action = FixAction(self.parent, name, data)
         self.UndoHistory.append(action)
         self.RedoHistory = []
-        self.parent.EditMenu_Undo.Enable(True)
-        self.parent.EditMenu_Redo.Enable(False)
+        self.parent.EnableUndo(True)
+        self.parent.EnableRedo(False)
 
     def StartAdd(self, name, data):
         """StartAdd() is used to begin adding data when only part of it is 

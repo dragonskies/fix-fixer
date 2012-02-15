@@ -1,0 +1,27 @@
+Traceback (most recent call last):
+  File "fixfixer_main.py", line 7, in <module>
+  File "wx\_core.pyo", line 7981, in __init__
+  File "wx\_core.pyo", line 7555, in _BootstrapApp
+  File "FixFixerGui.pyo", line 416, in OnInit
+  File "FixFixerGui.pyo", line 144, in __init__
+  File "FixFixerGui.pyo", line 171, in __set_properties
+  File "wx\_controls.pyo", line 3875, in Realize
+wx._core.PyAssertionError: C++ assertion "wxAssertFailure" failed at ..\..\src\msw\tbar95.cpp(726) in wxToolBar::Realize(): invalid tool button bitmap
+Traceback (most recent call last):
+  File "fixfixer_main.py", line 3, in <module>
+  File "zipextimporter.pyo", line 82, in load_module
+  File "FixFixerGui.pyo", line 19, in <module>
+  File "zipextimporter.pyo", line 82, in load_module
+  File "fixfixer_template2.pyo", line 6, in <module>
+  File "zipextimporter.pyo", line 82, in load_module
+  File "wx\lib\masked\__init__.pyo", line 20, in <module>
+  File "zipextimporter.pyo", line 82, in load_module
+  File "wx\lib\masked\maskededit.pyo", line 828, in <module>
+ImportError: No module named difflib
+Traceback (most recent call last):
+  File "fixfixer_main.py", line 3, in <module>
+  File "zipextimporter.pyo", line 82, in load_module
+  File "FixFixerGui.pyo", line 19, in <module>
+  File "zipextimporter.pyo", line 82, in load_module
+  File "fixfixer_template2.pyo", line 8, in <module>
+ImportError: No module named fixfixer_templatepage

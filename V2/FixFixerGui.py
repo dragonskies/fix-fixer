@@ -14,12 +14,17 @@ import fixfixer_about
 import fixfixer_messagetree
 import fixfixer_help
 import fixfixer_customtemplate
+import FixFixerProperties
+
 
 # begin wxGlade: extracode
 # end wxGlade
 
 
 class FixFixerFrame(wx.Frame):
+    
+    default_tags = FixFixerProperties.DefaultTags()
+    
     def __init__(self, *args, **kwds):
         # begin wxGlade: FixFixerFrame.__init__
         kwds["style"] = wx.DEFAULT_FRAME_STYLE
@@ -94,6 +99,10 @@ class FixFixerFrame(wx.Frame):
         self.__do_bindings()
         
         # end wxGlade
+        
+        #properties
+        
+        
 
     def __set_properties(self):
         # begin wxGlade: FixFixerFrame.__set_properties
@@ -272,9 +281,15 @@ class FixFixerFrame(wx.Frame):
 
     def onPreferences(self, event):
         personal_tags = fixfixer_customtemplate.create(self)
+        print self.default_tags.GetProperties()
+        personal_tags.editableListBox1.SetStrings(self.default_tags.GetProperties())
         response = personal_tags.ShowModal()
         if response == wx.ID_OK:
             print "save tags"
+            tags = personal_tags.editableListBox1.Strings
+            for tag in tags:
+                tag_number, tag_value = tag.split("=")
+                self.default_tags.SetProperty(tag_number,tag_value)
         personal_tags.Destroy()
 
 # ---------------------------------------------------------------------------- #

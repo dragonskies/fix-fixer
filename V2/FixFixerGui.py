@@ -360,7 +360,8 @@ class FixFixerFrame(wx.Frame):
 
     def onDoWizard(self, event):
         wizard_message = fixfixer_wizard.doMessageWizard(self)
-        self.MarketData.SetValue(wizard_message)
+        header_message = "8=FIX.4.2\x019=352\x0134=440\x01326=17\x01"
+        self.MarketData.SetValue(header_message+wizard_message)
         self.onPushButton_toMessageTree(event)
         
     def onCut(self, event):

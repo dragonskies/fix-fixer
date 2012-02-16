@@ -102,9 +102,10 @@ class Body1(wx.Dialog):
 			tag_270 = "270=" + str(page.numCtrl1.GetValue())
 			tag_271 = "271=" + str(page.intCtrl1.GetValue())
 			tag_55 = "55=" + page.textCtrl1.GetValue()
-			message = message + tag_279 + soh + tag_269 + soh + tag_270 + soh + tag_271 + soh + tag_55 + soh
+			tag_278 = "278="+ str(self.panelID)
+			message = message + tag_279 + soh + tag_269 + soh + tag_270 + soh + tag_271 + soh + tag_55 + soh + tag_278 + soh
 		print message
-		return message
+		return "268="+ str(page_count) + soh + message
 #Boa:FramePanel:Panel1
 
 [wxID_PANEL1, wxID_PANEL1CHOICE1, wxID_PANEL1CHOICE2, wxID_PANEL1INTCTRL1, 

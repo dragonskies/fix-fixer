@@ -359,7 +359,9 @@ class FixFixerFrame(wx.Frame):
         personal_tags.Destroy()
 
     def onDoWizard(self, event):
-        fixfixer_wizard.doMessageWizard(self)
+        wizard_message = fixfixer_wizard.doMessageWizard(self)
+        self.MarketData.SetValue(wizard_message)
+        self.onPushButton_toMessageTree(event)
         
     def onCut(self, event):
         focus = self.FindFocus()

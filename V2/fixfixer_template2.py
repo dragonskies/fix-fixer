@@ -88,6 +88,23 @@ class Body1(wx.Dialog):
 	def OnButton2Button(self, event):
 		self.EndModal(2)
 
+	def GetMarketData(self):
+		soh = "\x01"
+		message = ""
+		page_count = self.notebook1.GetPageCount()
+		for i in range(page_count):
+			page = self.notebook1.GetPage(i)
+			tag_279 = "279=" + str(page.choice1.GetSelection())
+			if page.choice2.GetSelection ==3:
+				tag_269 = "269=J"
+			else:
+				tag_269 = "269="+ str(page.choice2.GetSelection())
+			tag_270 = "270=" + str(page.numCtrl1.GetValue())
+			tag_271 = "271=" + str(page.intCtrl1.GetValue())
+			tag_55 = "55=" + page.textCtrl1.GetValue()
+			message = message + tag_279 + soh + tag_269 + soh + tag_270 + soh + tag_271 + soh + tag_55 + soh
+		print message
+		return message
 #Boa:FramePanel:Panel1
 
 [wxID_PANEL1, wxID_PANEL1CHOICE1, wxID_PANEL1CHOICE2, wxID_PANEL1INTCTRL1, 

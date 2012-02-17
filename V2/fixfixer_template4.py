@@ -28,7 +28,7 @@ class Dialog1(wx.Dialog):
 			pos=wx.Point(8, 16), size=wx.Size(102, 13), style=0)
 
 		self.spinCtrl1 = wx.SpinCtrl(id=wxID_DIALOG1SPINCTRL1, initial=0,
-			max=100, min=0, name='spinCtrl1', parent=self, pos=wx.Point(120,
+			max=5, min=1, name='spinCtrl1', parent=self, pos=wx.Point(120,
 			8), size=wx.Size(117, 21), style=wx.SP_ARROW_KEYS)
 		self.spinCtrl1.Bind(wx.EVT_TEXT_ENTER, self.OnSpinCtrl1TextEnter,
 			id=wxID_DIALOG1SPINCTRL1)

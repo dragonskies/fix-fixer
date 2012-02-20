@@ -274,7 +274,7 @@ class FixFixerFrame(wx.Frame):
         LoadFileDialog = wx.FileDialog(self) 
         if (LoadFileDialog.ShowModal() == wx.ID_CANCEL): return
         message_file = LoadFileDialog.GetFilename()
-        if (LoadFileDialog.GetFilename()==""): return
+        if (LoadFileDialog.GetFilename()==""):return
         message_file_dir = LoadFileDialog.GetPath()
         f = file(message_file_dir, 'r')
         self.MarketData.SetMessage(f.read())
@@ -360,6 +360,8 @@ class FixFixerFrame(wx.Frame):
 
     def onDoWizard(self, event):
         wizard_message = fixfixer_wizard.doMessageWizard(self)
+        if wizard_message == "":
+            return
         header_message = "8=FIX.4.2\x019=352\x0134=440\x01326=17\x01"
         self.MarketData.SetValue(header_message+wizard_message)
         self.onPushButton_toMessageTree(event)

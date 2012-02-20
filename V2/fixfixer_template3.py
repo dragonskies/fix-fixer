@@ -28,13 +28,10 @@ class Dialog1(wx.Dialog):
 			style=wx.DEFAULT_DIALOG_STYLE, title=u'Legs')
 		self.SetClientSize(wx.Size(412, 299))
 
-		self.spinCtrl1 = wx.SpinCtrl(id=wxID_DIALOG1SPINCTRL1, initial=0,
+		self.spinCtrl1 = wx.SpinCtrl(id=wxID_DIALOG1SPINCTRL1, initial=1,
 			max=2, min=1, name='spinCtrl1', parent=self, pos=wx.Point(160,
 			16), size=wx.Size(117, 21), style=wx.SP_ARROW_KEYS)
-		self.spinCtrl1.SetValue(1)
-		self.spinCtrl1.SetRange(1, 10)
-		self.spinCtrl1.Bind(wx.EVT_TEXT_ENTER, self.OnSpinCtrl1TextEnter,
-			id=wxID_DIALOG1SPINCTRL1)
+		
 		self.spinCtrl1.Bind(wx.EVT_SPINCTRL, self.OnSpinCtrl1Spinctrl,
 			id=wxID_DIALOG1SPINCTRL1)
 
@@ -55,8 +52,8 @@ class Dialog1(wx.Dialog):
 			size=wx.Size(75, 23), style=0)
 		self.button2.SetAutoLayout(True)
 		self.button2.Center(wx.HORIZONTAL)
-		self.button2.Bind(wx.EVT_BUTTON, self.OnButton2Button,
-			id=wxID_DIALOG1BUTTON1)
+		#self.button2.Bind(wx.EVT_BUTTON, self.OnButton2Button,
+		#	id=wxID_DIALOG1BUTTON1)
 
 		self.button3 = wx.Button(id=wx.ID_CANCEL, label=u'Cancel',
 			name='button3', parent=self, pos=wx.Point(312, 256),
@@ -71,20 +68,15 @@ class Dialog1(wx.Dialog):
 		
 		self._init_coll_notebook1_Pages(self.notebook1)
 
-
-
-	def OnSpinCtrl1TextEnter(self, event):
-		event.Skip()
-
 	def OnSpinCtrl1Spinctrl(self, event):
-		self.panelID +=1
 		data_page = Panel1(self.notebook1, self.panelID, "leg info")
-		if self.notebook1.GetPageCount() < self.spinCtrl1.GetValue():
-			self.notebook1.AddPage(data_page, "Leg " + str(self.panelID))
-		if self.notebook1.GetPageCount() > self.spinCtrl1.GetValue():
-			self.notebook1.RemovePage(0)
-		event.Skip()
-
+		while self.notebook1.GetPageCount() != self.spinCtrl1.GetValue():
+			if self.notebook1.GetPageCount() < self.spinCtrl1.GetValue():
+				self.notebook1.AddPage(data_page, "Leg " + str(self.panelID))
+				self.panelID +=1
+			if self.notebook1.GetPageCount() > self.spinCtrl1.GetValue():
+				self.notebook1.RemovePage(0)
+			
 	def OnButton1Button(self, event):
 		self.EndModal(1)
 

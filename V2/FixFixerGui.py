@@ -256,11 +256,15 @@ class FixFixerFrame(wx.Frame):
                                      (wx.ACCEL_CTRL, ord('y'), self.key_redo),
                                     ])
         self.SetAcceleratorTable(self.accel_tbl)
+        
+    def SetMain(self, main):
+        self.main = main
 
 # ----- Events --------------------------------------------------------------- #
 
     def onNew(self, event):
-        wx.MessageBox("'New Window' has not yet been implemented.")
+        #wx.MessageBox("'New Window' has not yet been implemented.")
+        self.main.StartApplication()
 
     def onKeyPress(self, event):
         """Event handler for detecting special key presses."""
@@ -296,14 +300,12 @@ class FixFixerFrame(wx.Frame):
         f.write(self.MarketData.GetMessage())
         f.close()
         self.SetStatusbar("Saved file %s" % message_file_dir, 3)
+        
+    
 
     def onExit(self, event):
         """Event handler to exit the application."""
-        dlg = wx.MessageDialog(self, "Are you sure you wish to exit?",
-                               "Confirm Exit", wx.CANCEL|wx.OK|wx.ICON_QUESTION)
-        result = dlg.ShowModal()
-        dlg.Destroy()
-        if result == wx.ID_OK: sys.exit()
+        self.main.OnClose()
 
     def onUndo(self, event):
         """Event handler for Undo action."""
@@ -363,7 +365,7 @@ class FixFixerFrame(wx.Frame):
         if wizard_message == "":
             return
         header_message = "8=FIX.4.2\x019=352\x0134=440\x01326=17\x01"
-        self.MarketData.SetValue(header_message+wizard_message)
+        self.MarketData.SetMessage(header_message+wizard_message)
         self.onPushButton_toMessageTree(event)
         
     def onCut(self, event):
@@ -442,10 +444,53 @@ class WorkerThread(threading.Thread):
 class FixFixerGui(wx.App):
     def OnInit(self):
         wx.InitAllImageHandlers()
-        mainFrame = FixFixerFrame(None, -1, "")
-        self.SetTopWindow(mainFrame)
-        mainFrame.Show()
+        self.mainFrame = FixFixerFrame(None, -1, "")
+        self.SetTopWindow(self.mainFrame)
+        self.childrenApps = []
+        self.parent = None
+        self.mainFrame.SetMain(self)
+        self.mainFrame.Show()
         return 1
+        
+    def AddChildApp(self, app):
+        self.childrenApps.append(app)
+        app.SetParent(self)
+        
+    def RemoveChildApp(self, app):
+        self.childrenApps.remove(app)
+        
+    def SetParent(self, app):
+        self.parent = app
+        
+    def OnClose(self):
+        if self.parent: # If application has parent
+            if len(self.childrenApps) > 0:
+                for child in self.childrenApps:
+                    self.parent.AddChildApp(child)
+            self.parent.RemoveChildApp(self)
+        if len(self.childrenApps) == 0:
+            if not self.parent:
+                dlg = wx.MessageDialog(self.mainFrame, "Are you sure you wish to exit?",
+                                       "Confirm Exit", wx.CANCEL|wx.OK|wx.ICON_QUESTION)
+                result = dlg.ShowModal()
+                dlg.Destroy()
+                if result == wx.ID_OK: sys.exit()
+            else:
+                self.mainFrame.Hide()
+        else:
+            for child in self.childrenApps:
+                child.SetParent(self.parent)
+            self.mainFrame.Hide()
+            
+    def StartApplication(self):
+        app = FixFixerGui(0)
+        self.AddChildApp(app)
+        app.MainLoop()
+
+
 
 # end of class FixFixerGui
 
+def RunApplication():
+    app = FixFixerGui(0)
+    app.MainLoop()

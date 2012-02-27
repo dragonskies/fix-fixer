@@ -34,8 +34,7 @@ class Body1(wx.Dialog):
 			size=wx.Size(117, 21), style=wx.SP_ARROW_KEYS)
 		self.spinCtrl1.SetValue(1)
 		self.spinCtrl1.SetRange(1, 10)
-		self.spinCtrl1.Bind(wx.EVT_TEXT_ENTER, self.OnSpinCtrl1TextEnter,
-			id=wxID_BODY1SPINCTRL1)
+
 		self.spinCtrl1.Bind(wx.EVT_SPINCTRL, self.OnSpinCtrl1Spinctrl,
 			id=wxID_BODY1SPINCTRL1)
 
@@ -70,16 +69,15 @@ class Body1(wx.Dialog):
 	def __init__(self, parent):
 		self._init_ctrls(parent)
 
-	def OnSpinCtrl1TextEnter(self, event):
-		event.Skip()
 
 	def OnSpinCtrl1Spinctrl(self, event):
-		self.panelID +=1
-		data_page = Panel1(self.notebook1, self.panelID, "market data")
-		if self.notebook1.GetPageCount() < self.spinCtrl1.GetValue():
-			self.notebook1.AddPage(data_page, "Data " + str(self.panelID))
-		if self.notebook1.GetPageCount() > self.spinCtrl1.GetValue():
-			self.notebook1.RemovePage(0)
+		while self.notebook1.GetPageCount() != self.spinCtrl1.GetValue():
+			self.panelID +=1
+			data_page = Panel1(self.notebook1, self.panelID, "market data")
+			if self.notebook1.GetPageCount() < self.spinCtrl1.GetValue():
+				self.notebook1.AddPage(data_page, "Data " + str(self.panelID))
+			if self.notebook1.GetPageCount() > self.spinCtrl1.GetValue():
+				self.notebook1.RemovePage(0)
 		event.Skip()
 
 	def OnButton1Button(self, event):

@@ -25,3 +25,8 @@ Traceback (most recent call last):
   File "zipextimporter.pyo", line 82, in load_module
   File "fixfixer_template2.pyo", line 8, in <module>
 ImportError: No module named fixfixer_templatepage
+Traceback (most recent call last):
+  File "FixFixerGui.pyo", line 341, in onPushButton_toMessageTree
+  File "fixfixer_messagetree.pyo", line 286, in SetMessage
+  File "QuickFixParser.pyo", line 8, in __init__
+TypeError: coercing to Unicode: need string or buffer, NoneType found

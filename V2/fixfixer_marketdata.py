@@ -56,12 +56,40 @@ class MarketData(wx.TextCtrl):
 		message = self.GetMessage()
 		message = message[:selection[0]] + pyperclip.paste() + message[selection[1]:]
 		self.SetMessage(message)
+		
+	def ParseUnitOfWorkPublisher(self, message):
+		"""Handle 'Unit of Work Publisher' messages."""
+		newStr = ''
+		inQuotes = False
+		for char in message:
+			if inQuotes:
+				if char == '"':
+					inQuotes = False
+				else:
+					newStr = newStr + char
+			else:
+				if char == '"':
+					inQuotes = True
+				elif char == '[':
+					pass
+				elif char == ']':
+					pass
+				elif char == ' ':
+					newStr = newStr + '|'
+				else:
+					newStr = newStr + char
+		return newStr
+		
 
 	def SetMessage(self, message):
 		"""Update the MarketData message."""
-		if "\x01" in message: message = trim_SOH(message)
-		message = message.replace('\x01', '|')
-		self.SetValue(message)
+		if "[" in message:
+			newMessage = self.ParseUnitOfWorkPublisher(message)
+			self.SetValue(newMessage)
+		else:
+			if "\x01" in message: message = trim_SOH(message)
+			message = message.replace('\x01', '|')
+			self.SetValue(message)
 
 	def GetMessage(self):
 		"""Return the MarketData message."""

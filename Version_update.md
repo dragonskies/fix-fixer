@@ -1,0 +1,18 @@
+# Update! Version 1.0 released #
+
+The base features we wanted to implement are now completed.
+  * Paste/copy text field
+  * drag/drop of message tree
+  * load/save of messages
+  * basic help file
+  * clearing of both the paste bin and message tree
+
+
+# Next up #
+
+Version 1.0 is completed, see above for list of features
+Version 2.0 will feature:
+  * updated GUI
+  * templates
+  * wizard
+  * repeating groups

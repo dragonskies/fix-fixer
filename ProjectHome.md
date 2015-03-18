@@ -1,0 +1,1 @@
+fix-fixer is an easy to use FIX message creator/editor for testing messaging systems
